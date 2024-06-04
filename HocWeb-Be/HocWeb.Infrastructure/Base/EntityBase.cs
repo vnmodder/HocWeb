@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace HocWeb.Infrastructure.Base
 {
-    public abstract class EntityBase<TKey>
+    public abstract class EntityBase
     {
-        public virtual TKey? Id { get; set; }
-        public virtual DateTime CreatedDate { get; set; }
-        public virtual DateTime UpdatedDate { get; set; }
+        public int? Id { get; set; }
+        public virtual DateTime? CreatedDate { get; set; }
+        public virtual DateTime? UpdatedDate { get; set; }
         public virtual DateTime? DeleteDate { get; set; }
     }
 }
