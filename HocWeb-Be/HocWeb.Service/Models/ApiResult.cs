@@ -8,9 +8,9 @@ namespace HocWeb.Service.Models
 {
     public class ApiResult<T> where T : class
     {
-        public T Data { get; set; }
-        public string Message { get; set; }
-        public int StatusCode { get; set; }
+        public T? Data { get; set; }
+        public string? Message { get; set; }
+        public int StatusCode { get; set; } = 200;
         public List<string> Errors { get; set; }
         public ApiResult()
         {
