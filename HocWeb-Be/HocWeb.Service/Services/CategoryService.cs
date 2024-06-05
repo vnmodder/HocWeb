@@ -1,6 +1,5 @@
 ﻿using HocWeb.Infrastructure;
 using HocWeb.Infrastructure.Entities;
-using HocWeb.Infrastructure.Extensions;
 using HocWeb.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -22,7 +21,7 @@ namespace HocWeb.Service.Services
 
         public async Task<Category?> Add(Category model)
         {
-            var cateGory = await _dataContext.Categories.Exist().FirstOrDefaultAsync(x => x.Name == model.Name);
+            var cateGory = await _dataContext.Categories.FirstOrDefaultAsync(x => x.Name == model.Name);
             if (cateGory == null)
             {
                 using var tran = _dataContext.Database.BeginTransaction();
@@ -46,7 +45,7 @@ namespace HocWeb.Service.Services
 
         public async Task<bool> Delete(int id)
         {
-             var cateGory = await _dataContext.Categories.Exist().FirstOrDefaultAsync(x => x.Id == id);
+             var cateGory = await _dataContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (cateGory != null)
             {
                 using var tran = _dataContext.Database.BeginTransaction();
@@ -68,17 +67,17 @@ namespace HocWeb.Service.Services
 
         public async Task<IList<Category>> GetAll()
         {
-            return await _dataContext.Categories.Exist().ToListAsync();
+            return await _dataContext.Categories.Where(x=>x.DeleteDate == null).ToListAsync();
         }
 
         public async Task<Category?> GetById(int id)
         {
-            return await _dataContext.Categories.Exist().FirstOrDefaultAsync(x=>x.Id == id);
+            return await _dataContext.Categories.Where(x => x.DeleteDate == null).FirstOrDefaultAsync(x=>x.Id == id);
         }
 
         public async Task<bool> Update(Category model)
         {
-            var cateGory = await _dataContext.Categories.Exist()
+            var cateGory = await _dataContext.Categories.Where(x => x.DeleteDate == null)
                             .FirstOrDefaultAsync(x => x.Id == model.Id);
 
             if (cateGory != null)
