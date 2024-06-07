@@ -51,6 +51,7 @@ namespace HocWeb.Service.Services
                 using var tran = _dataContext.Database.BeginTransaction();
                 try
                 {
+                   
                     cateGory.DeleteDate = DateTime.Now;
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
