@@ -10,8 +10,7 @@ namespace HocWeb.Infrastructure.Entities
 {
     public class Order : EntityBase
     {
-        public new int Id { get; set; }
-        public required string CustomerId { get; set; }
+        public  int CustomerId { get; set; }
         public DateTime? RequireDate { get; set; }
         public string? Receiver { get; set; }
         public string? Address { get; set; }

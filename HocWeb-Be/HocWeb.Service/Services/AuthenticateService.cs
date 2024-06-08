@@ -41,7 +41,7 @@ namespace HocWeb.Service.Services
             {
                 var user = await _userManager.FindByNameAsync(model.UserName);
 
-                if (user != null)
+                if (user != null && !user.DeleteDate.HasValue)
                 {
                     var signInResult = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, lockoutOnFailure: false);
                     if (signInResult.Succeeded)
@@ -148,7 +148,7 @@ namespace HocWeb.Service.Services
                 {
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                    new Claim("user-name", user.UserName.ToString()),
+                    new Claim("user-name", user.UserName?.ToString()),
                     new Claim("role",role),
                     new Claim(ClaimTypes.NameIdentifier, user.UserName),
                     new Claim(ClaimTypes.Email, user.Email),

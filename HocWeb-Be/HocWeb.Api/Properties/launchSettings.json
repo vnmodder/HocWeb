@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "http": {
+    "HocWeb": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

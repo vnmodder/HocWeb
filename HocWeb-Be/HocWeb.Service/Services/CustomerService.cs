@@ -35,7 +35,7 @@ namespace HocWeb.Service.Services
 
                 try
                 {
-                    //model.CreatedDate = DateTime.Now; hoi thay cach link voi thang entitybase
+                    model.CreatedDate = DateTime.Now; // hoi thay cach link voi thang entitybase
                     _dataContext.Customers.Add(model); // chu y thay cusTomer = model
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
@@ -60,7 +60,8 @@ namespace HocWeb.Service.Services
 
                 try
                 {
-                    _dataContext.Customers.Remove(cusTomer);
+                    //_dataContext.Customers.Remove(cusTomer);
+                    cusTomer.DeleteDate = DateTime.Now;
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
                     return true;
@@ -79,17 +80,17 @@ namespace HocWeb.Service.Services
 
         public async Task<IList<Customer>> GetAll()
         {
-            return await _dataContext.Customers.ToListAsync();
+            return await _dataContext.Customers.Exist().ToListAsync();
         }
 
         public async Task<Customer?> GetById(int id)
         {
-            return await _dataContext.Customers.FirstOrDefaultAsync(x => x.Id == id);
+            return await _dataContext.Customers.Exist().FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<bool> Update(Customer model)
         {
-            var cusTomer = await _dataContext.Customers.FirstOrDefaultAsync(x => x.Id == model.Id);
+            var cusTomer = await _dataContext.Customers.Exist().FirstOrDefaultAsync(x => x.Id == model.Id);
             if (cusTomer != null)
             {
                 using var tran = _dataContext.Database.BeginTransaction();

@@ -1,5 +1,6 @@
 ﻿using HocWeb.Infrastructure;
 using HocWeb.Infrastructure.Entities;
+using HocWeb.Infrastructure.Extensions;
 using HocWeb.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -28,7 +29,6 @@ namespace HocWeb.Service.Services
                 try
                 {
                     model.CreatedDate = DateTime.Now;
-
                      _dataContext.Categories.Add(model);
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
@@ -52,7 +52,7 @@ namespace HocWeb.Service.Services
                 using var tran = _dataContext.Database.BeginTransaction();
                 try
                 {
-                    _dataContext.Remove(cateGory);
+                    //_dataContext.Remove(cateGory); bỏ cái này
                     cateGory.DeleteDate = DateTime.Now;
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
@@ -70,17 +70,17 @@ namespace HocWeb.Service.Services
 
         public async Task<IList<Category>> GetAll()
         {
-            return await _dataContext.Categories.Where(x=>x.DeleteDate == null).ToListAsync();
+            return await _dataContext.Categories.Exist().ToListAsync();
         }
 
         public async Task<Category?> GetById(int id)
         {
-            return await _dataContext.Categories.Where(x => x.DeleteDate == null).FirstOrDefaultAsync(x=>x.Id == id);
+            return await _dataContext.Categories.Exist().FirstOrDefaultAsync(x=>x.Id == id);
         }
 
         public async Task<bool> Update(Category model)
         {
-            var cateGory = await _dataContext.Categories.Where(x => x.DeleteDate == null)
+            var cateGory = await _dataContext.Categories.Exist()
                             .FirstOrDefaultAsync(x => x.Id == model.Id);
 
             if (cateGory != null)
