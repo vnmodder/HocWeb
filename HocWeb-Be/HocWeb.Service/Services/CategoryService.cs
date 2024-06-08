@@ -29,6 +29,7 @@ namespace HocWeb.Service.Services
                 try
                 {
                     model.CreatedDate = DateTime.Now;
+
                      _dataContext.Categories.Add(model);
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
@@ -52,9 +53,11 @@ namespace HocWeb.Service.Services
                 using var tran = _dataContext.Database.BeginTransaction();
                 try
                 {
+                    _dataContext.Remove(cateGory);
                     cateGory.DeleteDate = DateTime.Now;
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
+                    return true;
                 }
                 catch (Exception e)
                 {
@@ -94,6 +97,7 @@ namespace HocWeb.Service.Services
                     
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
+                    return true;
                 }
                 catch (Exception e)
                 {
