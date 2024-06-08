@@ -16,7 +16,7 @@ namespace HocWeb.Infrastructure.Entities
         public int Quantity { get; set; }
         public double Discount { get; set; }
 
-        public virtual Order Order { get; set; }
-     /*   public virtual Product Product { get; set; }*/
+       /* public virtual Order Order { get; set; }
+     *//*   public virtual Product Product { get; set; }*/
     }
 }

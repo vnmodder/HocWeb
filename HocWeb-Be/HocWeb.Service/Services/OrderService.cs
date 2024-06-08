@@ -44,6 +44,7 @@ namespace HocWeb.Service.Services
             throw new Exception("Order này đã tồn tại");
         }
 
+
         public async Task<bool> Delete(int id)
         {
             var order = await datacontext.Orders.FirstOrDefaultAsync(x => x.Id == id);
@@ -56,17 +57,20 @@ namespace HocWeb.Service.Services
                     datacontext.Orders.Remove(order);
                     await datacontext.SaveChangesAsync();
                     await tran.CommitAsync();
+                    return true;
            
                 }
                 catch (Exception e)
                 {
                     await tran.RollbackAsync();
                     throw new Exception(e.Message);
+       
                 }
             }
 
             throw new Exception("Order này không tồn tại");
         }
+
 
         public async Task<IList<Order>> GetAll()
         {
@@ -80,19 +84,20 @@ namespace HocWeb.Service.Services
 
         public async Task<bool> Update(Order model)
         {
-            var order = await datacontext.Orders.Where(x => x.DeleteDate == null).FirstOrDefaultAsync(x => x.Id == model.Id);
+            var order = await datacontext.Orders.FirstOrDefaultAsync(x => x.Id == model.Id);
             if (order != null)
             {
                 using var tran = datacontext.Database.BeginTransaction();
                 try
                 {
-                    order.Id = model.Id;
+                    
                     order.CustomerId = model.CustomerId;
                     order.RequireDate = model.RequireDate;
                     order.Receiver = model.Receiver;
                     order.Address = model.Address;
                     order.Description = model.Description;
                     order.Amount = model.Amount;
+                    order.UpdatedDate = DateTime.Now;
                     await datacontext.SaveChangesAsync();
                     await tran.CommitAsync();
      
@@ -103,8 +108,7 @@ namespace HocWeb.Service.Services
                     throw new Exception(e.Message);
                 }
             }
-
-            throw new Exception("Order này đã tồn tại");
+            throw new Exception("Order này không tồn tại");
         }
     }
    

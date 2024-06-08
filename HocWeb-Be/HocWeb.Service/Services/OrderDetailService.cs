@@ -1,5 +1,7 @@
-﻿using HocWeb.Infrastructure.Entities;
+﻿using HocWeb.Infrastructure;
+using HocWeb.Infrastructure.Entities;
 using HocWeb.Service.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +12,18 @@ namespace HocWeb.Service.Services
 {
     public class OrderDetailService : IOrderDetailService
     {
-        public Task<OrderDetail?> Add(OrderDetail model)
+        private readonly DataContext datacontext;
+
+        public OrderDetailService(DataContext context)
         {
-            throw new NotImplementedException();
+            datacontext = context;
         }
+
+        public Task<OrderDetail> Add(OrderDetail model)
+        {
+          throw new NotImplementedException();
+        }
+
 
         public Task<bool> Delete(int id)
         {
@@ -34,5 +44,7 @@ namespace HocWeb.Service.Services
         {
             throw new NotImplementedException();
         }
+
+       
     }
 }

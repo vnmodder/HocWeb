@@ -80,20 +80,20 @@ namespace HocWeb.Api.Controllers
                 });
             }
         }
-        /*[Authorize]
+        [Authorize]
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete([FromQuery] int id)
         {
             try
             {
-                bool result = await orderService.Delete(id);
-                if (result)
+                var result = await orderService.Delete(id);
+                if (result == true)
                 {
                     return Ok(new ApiResult<Order>()
                     {
-                        Data = result,
+                        Message = "Xóa thành công",
                         StatusCode = 200,
-                    }); ;
+                    }); 
                 }
                 else
                 {
@@ -114,19 +114,31 @@ namespace HocWeb.Api.Controllers
                     StatusCode = 500,
                 });
             }
-        }*/
-/*
+        }
+
         [HttpPatch("update")]
         public async Task<IActionResult> Update([FromBody] Order model)
         {
             try
             {
                 var result = await orderService.Update(model);
-                return Ok(new ApiResult<Order>()
+                if (result == true)
                 {
-                    Data = result,
-                    StatusCode = 200,
-                });
+                    return Ok(new ApiResult<Order>()
+                    {
+                        Message = "Cập nhật thành công",
+                        StatusCode = 200,
+                    });
+                }
+                else
+                {
+                    return BadRequest(new ApiResult<Order>()
+                    {
+                        Data = null,
+                        Message = "Không thể cập nhật",
+                        StatusCode = 500,
+                    });
+                }
             }
             catch (Exception e)
             {
@@ -137,6 +149,6 @@ namespace HocWeb.Api.Controllers
                     StatusCode = 500,
                 });
             }
-        }*/
+        }
     }
 }
