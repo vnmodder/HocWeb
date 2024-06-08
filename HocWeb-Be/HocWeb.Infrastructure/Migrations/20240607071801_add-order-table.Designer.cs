@@ -3,6 +3,7 @@ using System;
 using HocWeb.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HocWeb.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240607071801_add-order-table")]
+    partial class addordertable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,11 +27,11 @@ namespace HocWeb.Infrastructure.Migrations
 
             modelBuilder.Entity("HocWeb.Infrastructure.Entities.Category", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
@@ -37,19 +40,12 @@ namespace HocWeb.Infrastructure.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Icon")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Image")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NameVN")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedDate")
@@ -60,7 +56,7 @@ namespace HocWeb.Infrastructure.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("HocWeb.Infrastructure.Entities.Customer", b =>
+            modelBuilder.Entity("HocWeb.Infrastructure.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -68,63 +64,38 @@ namespace HocWeb.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("Activated")
-                        .HasColumnType("boolean");
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
 
-                    b.Property<string>("Email")
+                    b.Property<double>("Amount")
+                        .HasColumnType("double precision");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Fullname")
-                        .IsRequired()
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
+                    b.Property<string>("Receiver")
                         .HasColumnType("text");
 
-                    b.Property<string>("Photo")
-                        .HasColumnType("text");
+                    b.Property<DateTime?>("RequireDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Orders");
                 });
-            modelBuilder.Entity("HocWeb.Infrastructure.Entities.Order", b =>
-
-                    {
-                        b.Property<string>("Address")
-                .HasColumnType("text");
-
-                        b.Property<double>("Amount")
-                            .HasColumnType("double precision");
-
-                        b.Property<DateTime?>("CreatedDate")
-                            .HasColumnType("timestamp without time zone");
-
-                        b.Property<string>("CustomerId")
-                            .IsRequired()
-                            .HasColumnType("text");
-
-                        b.Property<DateTime?>("DeleteDate")
-                            .HasColumnType("timestamp without time zone");
-
-                        b.Property<string>("Description")
-                            .HasColumnType("text");
-
-                        b.Property<string>("Receiver")
-                            .HasColumnType("text");
-
-                        b.Property<DateTime?>("RequireDate")
-                            .HasColumnType("timestamp without time zone");
-
-                        b.Property<DateTime?>("UpdatedDate")
-                            .HasColumnType("timestamp without time zone");
-
-                        b.HasKey("Id");
-
-                        b.ToTable("Orders");
-                    });
 
             modelBuilder.Entity("HocWeb.Infrastructure.Entities.OrderDetail", b =>
                 {

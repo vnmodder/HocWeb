@@ -9,21 +9,20 @@ namespace HocWeb.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
-    public class CategoryController : ControllerBase
+    public class OrderController : ControllerBase
     {
-        private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService categoryService)
+        private readonly IOrderService orderService;
+
+        public OrderController(IOrderService orderService)
         {
-            _categoryService = categoryService;
+            this.orderService = orderService;
         }
-
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _categoryService.GetAll();
-            return Ok(new ApiResult<IList<Category>>()
+           var result = await orderService.GetAll();
+            return Ok(new ApiResult<IList<Order>>()
             {
                 Data = result,
                 StatusCode = 200,
@@ -35,14 +34,14 @@ namespace HocWeb.Api.Controllers
         {
             try
             {
-                var result = await _categoryService.GetById(id);
+                var result = await orderService.GetById(id);
                 if (result != null)
-                    return Ok(new ApiResult<Category>()
+                    return Ok(new ApiResult<Order>()
                     {
                         Data = result,
                         StatusCode = 200,
                     });
-                return BadRequest(new ApiResult<Category>()
+                return BadRequest(new ApiResult<Order>()
                 {
                     Data = null,
                     StatusCode = 500,
@@ -50,7 +49,7 @@ namespace HocWeb.Api.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<Category>()
+                return BadRequest(new ApiResult<Order>()
                 {
                     Data = null,
                     Message = e.Message,
@@ -58,32 +57,22 @@ namespace HocWeb.Api.Controllers
                 });
             }
         }
-
         [Authorize]
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromBody] Category model)
+        public async Task<IActionResult> Add([FromBody] Order model)
         {
             try
             {
-                var result = await _categoryService.Add(model);
-                if (result != null)
+                var result = await orderService.Add(model);
+                return Ok(new ApiResult<Order>()
                 {
-                    return Ok(new ApiResult<Category>()
-                    {
-                        Data = result,
-                        StatusCode = 200,
-                    });
-                }
-                return BadRequest(new ApiResult<Category>()
-                {
-                    Data = null,
-                    Message = "Không thể thêm mới ",
-                    StatusCode = 500,
+                    Data = result,
+                    StatusCode = 200,
                 });
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<Category>()
+                return BadRequest(new ApiResult<Order>()
                 {
                     Data = null,
                     Message = e.Message,
@@ -91,31 +80,34 @@ namespace HocWeb.Api.Controllers
                 });
             }
         }
-
         [Authorize]
         [HttpDelete("delete")]
-        public async Task<IActionResult> Delete([FromBody] int id)
+        public async Task<IActionResult> Delete([FromQuery] int id)
         {
             try
             {
-                var result = await _categoryService.Delete(id);
+                var result = await orderService.Delete(id);
                 if (result == true)
                 {
-                    return Ok(new ApiResult<Category>()
+                    return Ok(new ApiResult<Order>()
                     {
+                        Message = "Xóa thành công",
                         StatusCode = 200,
+                    }); 
+                }
+                else
+                {
+                    return BadRequest(new ApiResult<Order>()
+                    {
+                        Data = null,
+                        Message = "Không thể xóa",
+                        StatusCode = 500,
                     });
                 }
-                return BadRequest(new ApiResult<Category>()
-                {
-                    Data = null,
-                    Message = "Không xóa thêm",
-                    StatusCode = 500,
-                });
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<Category>()
+                return BadRequest(new ApiResult<Order>()
                 {
                     Data = null,
                     Message = e.Message,
@@ -124,30 +116,33 @@ namespace HocWeb.Api.Controllers
             }
         }
 
-        [Authorize]
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] Category model)
+        public async Task<IActionResult> Update([FromBody] Order model)
         {
             try
             {
-                var result = await _categoryService.Update(model);
+                var result = await orderService.Update(model);
                 if (result == true)
                 {
-                    return Ok(new ApiResult<Category>()
+                    return Ok(new ApiResult<Order>()
                     {
+                        Message = "Cập nhật thành công",
                         StatusCode = 200,
                     });
                 }
-                return BadRequest(new ApiResult<Category>()
+                else
                 {
-                    Data = null,
-                    Message = "Không thể thêm mới ",
-                    StatusCode = 500,
-                });
+                    return BadRequest(new ApiResult<Order>()
+                    {
+                        Data = null,
+                        Message = "Không thể cập nhật",
+                        StatusCode = 500,
+                    });
+                }
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<Category>()
+                return BadRequest(new ApiResult<Order>()
                 {
                     Data = null,
                     Message = e.Message,

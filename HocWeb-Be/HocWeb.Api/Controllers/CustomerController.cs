@@ -92,7 +92,7 @@ namespace HocWeb.Api.Controllers
         }
 
         [Authorize]
-        [HttpPost("delete")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> Delete([FromBody] int id)
         {
             try
@@ -124,7 +124,7 @@ namespace HocWeb.Api.Controllers
         }
 
         [Authorize]
-        [HttpPost("update")]
+        [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] Customer model)
         {
             try
