@@ -116,7 +116,7 @@ namespace HocWeb.Api.Controllers
             }
         }
 
-        [HttpPatch("update")]
+        [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] Order model)
         {
             try

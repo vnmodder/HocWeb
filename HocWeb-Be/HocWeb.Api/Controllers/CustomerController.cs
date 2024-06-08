@@ -9,21 +9,20 @@ namespace HocWeb.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
-    public class CategoryController : ControllerBase
+    public class CustomerController : ControllerBase
     {
-        private readonly ICategoryService _categoryService;
+        private readonly ICustomerService _customerService;
 
-        public CategoryController(ICategoryService categoryService)
+        public CustomerController(ICustomerService customerService)
         {
-            _categoryService = categoryService;
+            _customerService = customerService;
         }
 
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _categoryService.GetAll();
-            return Ok(new ApiResult<IList<Category>>()
+            var result = await _customerService.GetAll();
+            return Ok(new ApiResult<IList<Customer>>()
             {
                 Data = result,
                 StatusCode = 200,
@@ -35,9 +34,9 @@ namespace HocWeb.Api.Controllers
         {
             try
             {
-                var result = await _categoryService.GetById(id);
+                var result = await _customerService.GetById(id);
                 if (result != null)
-                    return Ok(new ApiResult<Category>()
+                    return Ok(new ApiResult<Customer>()
                     {
                         Data = result,
                         StatusCode = 200,
@@ -61,20 +60,20 @@ namespace HocWeb.Api.Controllers
 
         [Authorize]
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromBody] Category model)
+        public async Task<IActionResult> Add([FromBody] Customer model)
         {
             try
             {
-                var result = await _categoryService.Add(model);
+                var result = await _customerService.Add(model);
                 if (result != null)
                 {
-                    return Ok(new ApiResult<Category>()
+                    return Ok(new ApiResult<Customer>()
                     {
                         Data = result,
                         StatusCode = 200,
                     });
                 }
-                return BadRequest(new ApiResult<Category>()
+                return BadRequest(new ApiResult<Customer>()
                 {
                     Data = null,
                     Message = "Không thể thêm mới ",
@@ -83,7 +82,7 @@ namespace HocWeb.Api.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<Category>()
+                return BadRequest(new ApiResult<Customer>()
                 {
                     Data = null,
                     Message = e.Message,
@@ -98,15 +97,15 @@ namespace HocWeb.Api.Controllers
         {
             try
             {
-                var result = await _categoryService.Delete(id);
+                var result = await _customerService.Delete(id);
                 if (result == true)
                 {
-                    return Ok(new ApiResult<Category>()
+                    return Ok(new ApiResult<Customer>()
                     {
                         StatusCode = 200,
                     });
                 }
-                return BadRequest(new ApiResult<Category>()
+                return BadRequest(new ApiResult<Customer>()
                 {
                     Data = null,
                     Message = "Không xóa thêm",
@@ -115,7 +114,7 @@ namespace HocWeb.Api.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<Category>()
+                return BadRequest(new ApiResult<Customer>()
                 {
                     Data = null,
                     Message = e.Message,
@@ -126,19 +125,19 @@ namespace HocWeb.Api.Controllers
 
         [Authorize]
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] Category model)
+        public async Task<IActionResult> Update([FromBody] Customer model)
         {
             try
             {
-                var result = await _categoryService.Update(model);
+                var result = await _customerService.Update(model);
                 if (result == true)
                 {
-                    return Ok(new ApiResult<Category>()
+                    return Ok(new ApiResult<Customer>()
                     {
                         StatusCode = 200,
                     });
                 }
-                return BadRequest(new ApiResult<Category>()
+                return BadRequest(new ApiResult<Customer>()
                 {
                     Data = null,
                     Message = "Không thể thêm mới ",
@@ -147,7 +146,7 @@ namespace HocWeb.Api.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<Category>()
+                return BadRequest(new ApiResult<Customer>()
                 {
                     Data = null,
                     Message = e.Message,
