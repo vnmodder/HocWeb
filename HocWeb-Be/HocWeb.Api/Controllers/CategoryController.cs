@@ -70,7 +70,7 @@ namespace HocWeb.Api.Controllers
                 {
                     return Ok(new ApiResult<Category>()
                     {
-                        Data = result,//
+                        Data = result,
                         StatusCode = 200,
                     });
                 }

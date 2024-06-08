@@ -28,6 +28,7 @@ namespace HocWeb.Service
             #region Business services
             services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IOrderService, OrderService>();
             #endregion
 
             return services;
