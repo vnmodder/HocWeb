@@ -89,8 +89,9 @@ namespace HocWeb.Service.Services
                     cateGory.Name = model.Name;
                     cateGory.Image = model.Image;
                     cateGory.Icon = model.Icon;
+                    cateGory.NameVN = model.NameVN;
                     cateGory.UpdatedDate = DateTime.Now;
-
+                    
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
                 }

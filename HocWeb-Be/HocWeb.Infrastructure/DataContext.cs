@@ -13,5 +13,7 @@ namespace HocWeb.Infrastructure
 
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
+
+        public virtual DbSet<Customer> Customers { get; set; }
     }
 }
