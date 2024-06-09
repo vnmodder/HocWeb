@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HocWeb.Service.Models.Authenticate
+﻿namespace HocWeb.Service.Models.Authenticate
 {
     public class LoginModel
     {

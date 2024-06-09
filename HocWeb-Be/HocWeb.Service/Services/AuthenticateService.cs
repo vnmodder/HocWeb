@@ -35,7 +35,7 @@ namespace HocWeb.Service.Services
             _dbContext = dbContext;
         }
 
-        public async Task<ApiResult<UserToken>> Login(LoginModel model)
+        public async Task<ApiResult> Login(LoginModel model)
         {
             try
             {
@@ -52,22 +52,18 @@ namespace HocWeb.Service.Services
                         var tokenResult = GenerateUserToken(user, roleString);
                         if (tokenResult != null)
                         {
-                            return new ApiResult<UserToken>()
+                            return new ApiResult()
                             {
                                 Data = tokenResult,
-                                Message = "Success",
-                                StatusCode = 200
                             };
                         }
                     }
 
                 }
 
-                return new ApiResult<UserToken>()
+                return new ApiResult()
                 {
-                    Data = null,
                     Message = "Unorthorize",
-                    StatusCode = 403
                 };
             }
             catch (Exception e)
@@ -76,7 +72,7 @@ namespace HocWeb.Service.Services
             }
         }
 
-        public async Task<ApiResult<string>> Register(RegisterModel model)
+        public async Task<ApiResult> Register(RegisterModel model)
         {
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
             try
@@ -84,9 +80,8 @@ namespace HocWeb.Service.Services
                 var userExist = await _userManager.FindByNameAsync(model.UserName);
                 if (userExist != null)
                 {
-                    return new ApiResult<string>()
+                    return new ApiResult()
                     {
-                        StatusCode = 400,
                         Message = $"{model.Email}  đã được sử dụng. Vui lòng thử lại!"
                     }; ;
                 }
@@ -103,9 +98,8 @@ namespace HocWeb.Service.Services
 
                 if (!newUserResult.Succeeded)
                 {
-                    return new ApiResult<string>()
+                    return new ApiResult()
                     {
-                        StatusCode = 500,
                         Message = "User creation failed"
                     };
                 }
@@ -120,10 +114,8 @@ namespace HocWeb.Service.Services
                 await _dbContext.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                return new ApiResult<string>()
+                return new ApiResult()
                 {
-                    Message = "Success",
-                    StatusCode = 200
                 };
 
             }

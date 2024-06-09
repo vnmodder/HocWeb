@@ -1,15 +1,12 @@
 ﻿using HocWeb.Service.Interfaces;
-using HocWeb.Service.Models;
 using HocWeb.Service.Models.Authenticate;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HocWeb.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthenticateController : ControllerBase
+    public class AuthenticateController : BaseController
     {
         private readonly IAuthenticateService _authenticateService;
 
@@ -24,11 +21,11 @@ namespace HocWeb.Api.Controllers
             try
             {
                 var result = await _authenticateService.Login(request);
-                return Ok(result);
+                return Response(result);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return Response(ex.Message, 500);
             }
         }
 
@@ -38,15 +35,11 @@ namespace HocWeb.Api.Controllers
             try
             {
                 var result = await _authenticateService.Register(request);
-                return new JsonResult(result.Data)
-                {
-                    StatusCode = result.StatusCode,
-                    Value = result.Message
-                };
+                return Response(new JsonResult(result.Data));
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return Response(ex.Message, 500);
             }
         }
     }

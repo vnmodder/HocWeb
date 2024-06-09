@@ -1,37 +1,34 @@
 ﻿using HocWeb.Infrastructure;
 using HocWeb.Infrastructure.Entities;
+using HocWeb.Infrastructure.Extensions;
+using HocWeb.Service.Interfaces;
+using HocWeb.Service.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace HocWeb.Service.Services
 {
-    public class SupplierService
+    public class SupplierService : BaseService, ISupplierService
     {
-        private readonly DataContext _dataContext;
 
-        public SupplierService(DataContext dataContext)
-        {
-            _dataContext = dataContext;
-        }
+        public SupplierService(DataContext dataContext) : base(dataContext) { }
+ 
 
-        public async Task<Supplier?> Add(Supplier model)
+        public async Task<ApiResult> Add(Supplier model)
         {
             var existingSupplier = await _dataContext.Suppliers.FirstOrDefaultAsync(x => x.Name == model.Name);
             if (existingSupplier != null)
             {
-                throw new Exception("Nhà cung cấp này đã tồn tại.");
+                return new ApiResult() { Message = "Nhà cung cấp này đã tồn tại." };
             }
 
             using var tran = await _dataContext.Database.BeginTransactionAsync();
             try
             {
-                model.CreatedDate = DateTime.Now;
+                model.CreatedDate = _now;
                 await _dataContext.Suppliers.AddAsync(model);
                 await _dataContext.SaveChangesAsync();
                 await tran.CommitAsync();
-                return model;
+                return new(model);
             }
             catch (Exception e)
             {
@@ -40,22 +37,22 @@ namespace HocWeb.Service.Services
             }
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<ApiResult> Delete(int id)
         {
             var supplier = await _dataContext.Suppliers.FirstOrDefaultAsync(x => x.Id == id);
             if (supplier == null)
             {
-                throw new Exception("Không tìm thấy nhà cung cấp này.");
+                return new ApiResult() { Message = "Không tìm thấy nhà cung cấp này." };
             }
 
             using var tran = await _dataContext.Database.BeginTransactionAsync();
             try
             {
-                supplier.DeleteDate = DateTime.Now;
-                _dataContext.Suppliers.Remove(supplier);
+                supplier.DeleteDate = _now;
+                //_dataContext.Suppliers.Remove(supplier);
                 await _dataContext.SaveChangesAsync();
                 await tran.CommitAsync();
-                return true;
+                return new();
             }
             catch (Exception e)
             {
@@ -64,22 +61,28 @@ namespace HocWeb.Service.Services
             }
         }
 
-        public async Task<IList<Supplier>> GetAll()
+        public async Task<ApiResult> GetAll()
         {
-            return await _dataContext.Suppliers.ToListAsync();
+            var result =  await _dataContext.Suppliers.Exist().ToListAsync();
+            return new(result);
+
         }
 
-        public async Task<Supplier?> GetById(int id)
+        public async Task<ApiResult> GetById(int id)
         {
-            return await _dataContext.Suppliers.FirstOrDefaultAsync(x => x.Id == id);
+            var result =  await _dataContext.Suppliers.Exist()
+                .FirstOrDefaultAsync(x => x.Id == id);
+            return new(result);
+
         }
 
-        public async Task<bool> Update(Supplier model)
+        public async Task<ApiResult> Update(Supplier model)
         {
-            var supplier = await _dataContext.Suppliers.FirstOrDefaultAsync(x => x.Id == model.Id);
+            var supplier = await _dataContext.Suppliers.Exist()
+                .FirstOrDefaultAsync(x => x.Id == model.Id);
             if (supplier == null)
             {
-                throw new Exception("Không tìm thấy nhà cung cấp này.");
+                return new ApiResult() { Message = "Không tìm thấy nhà cung cấp này." };
             }
 
             using var tran = await _dataContext.Database.BeginTransactionAsync();
@@ -89,11 +92,11 @@ namespace HocWeb.Service.Services
                 supplier.Logo = model.Logo;
                 supplier.Email = model.Email;
                 supplier.Phone = model.Phone;
-                supplier.UpdatedDate = DateTime.Now;
+                supplier.UpdatedDate = _now;
 
                 await _dataContext.SaveChangesAsync();
                 await tran.CommitAsync();
-                return true;
+                return new();
             }
             catch (Exception e)
             {

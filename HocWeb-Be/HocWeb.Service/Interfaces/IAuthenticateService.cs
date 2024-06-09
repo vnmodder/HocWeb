@@ -5,7 +5,7 @@ namespace HocWeb.Service.Interfaces
 {
     public interface IAuthenticateService
     {
-        Task<ApiResult<string>> Register(RegisterModel model);
-        Task<ApiResult<UserToken>> Login(LoginModel model);
+        Task<ApiResult> Register(RegisterModel model);
+        Task<ApiResult> Login(LoginModel model);
     }
 }

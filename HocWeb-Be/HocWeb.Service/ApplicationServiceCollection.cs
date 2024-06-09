@@ -29,7 +29,10 @@ namespace HocWeb.Service
             services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IOrderDetailService, OrderDetailService>();
             services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<ISupplierService, SupplierService>();
+            services.AddScoped<IProductService, ProductService>();
             #endregion
             return services;
         }

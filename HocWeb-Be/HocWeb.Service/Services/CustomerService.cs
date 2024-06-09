@@ -1,45 +1,30 @@
 ﻿using HocWeb.Infrastructure;
 using HocWeb.Infrastructure.Entities;
-using HocWeb.Service.Interfaces;
 using HocWeb.Infrastructure.Extensions;
+using HocWeb.Service.Interfaces;
+using HocWeb.Service.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HocWeb.Service.Services
 {
-    internal class CustomerService : ICustomerService
+    internal class CustomerService : BaseService, ICustomerService
     {
+        public CustomerService(DataContext dataContext) : base(dataContext) { }
 
-        private readonly DataContext _dataContext;
-        public CustomerService(DataContext dataContext) 
-        {
-            _dataContext = dataContext;
-        }
-        public async Task<Customer?> Add(Customer model)
+        public async Task<ApiResult> Add(Customer model)
         {
             var cusTomer = await _dataContext.Customers.FirstOrDefaultAsync(x => x.Email == model.Email);
-            if(cusTomer == null)
+            if (cusTomer == null)
             {
                 using var tran = _dataContext.Database.BeginTransaction();
 
                 try
                 {
-                    model.CreatedDate = DateTime.Now; // hoi thay cach link voi thang entitybase
+                    model.CreatedDate = _now; // hoi thay cach link voi thang entitybase
                     _dataContext.Customers.Add(model); // chu y thay cusTomer = model
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
-                    return model;
+                    return new(model);
                 }
                 catch (Exception ex)
                 {
@@ -48,47 +33,48 @@ namespace HocWeb.Service.Services
                 }
 
             }
-            throw new Exception("Khách hàng này đã tồn tại.");
+            return new() { Message = "Khách hàng này đã tồn tại." };
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<ApiResult> Delete(int id)
         {
             var cusTomer = await _dataContext.Customers.FirstOrDefaultAsync(x => x.Id == id);
-            if (cusTomer != null)   
+            if (cusTomer != null)
             {
                 using var tran = _dataContext.Database.BeginTransaction();
 
                 try
                 {
                     //_dataContext.Customers.Remove(cusTomer);
-                    cusTomer.DeleteDate = DateTime.Now;
+                    cusTomer.DeleteDate = _now;
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
-                    return true;
+                    return new();
                 }
                 catch (Exception ex)
                 {
                     await tran.RollbackAsync();
                     throw new Exception(ex.Message);
-                    return false;
                 }
 
             }
-            throw new Exception("Khách hàng này không tồn tại.");
-            return false;
+            return new ApiResult() { Message = "Khách hàng này không tồn tại." };
         }
 
-        public async Task<IList<Customer>> GetAll()
+        public async Task<ApiResult> GetAll()
         {
-            return await _dataContext.Customers.Exist().ToListAsync();
+            var result = await _dataContext.Customers.Exist().ToListAsync();
+            return new(result);
         }
 
-        public async Task<Customer?> GetById(int id)
+        public async Task<ApiResult> GetById(int id)
         {
-            return await _dataContext.Customers.Exist().FirstOrDefaultAsync(x => x.Id == id);
+            var result = await _dataContext.Customers.Exist()
+                .FirstOrDefaultAsync(x => x.Id == id);
+            return new(result);
         }
 
-        public async Task<bool> Update(Customer model)
+        public async Task<ApiResult> Update(Customer model)
         {
             var cusTomer = await _dataContext.Customers.Exist().FirstOrDefaultAsync(x => x.Id == model.Id);
             if (cusTomer != null)
@@ -103,22 +89,21 @@ namespace HocWeb.Service.Services
                     cusTomer.Fullname = model.Fullname;
                     cusTomer.Password = model.Password;
                     cusTomer.Id = model.Id;
-
+                    cusTomer.UpdatedDate = _now;
 
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
-                    return true;
+                    return new();
                 }
                 catch (Exception ex)
                 {
                     await tran.RollbackAsync();
                     throw new Exception(ex.Message);
-                    return false;
                 }
 
             }
-            throw new Exception("Khách hàng này không tồn tại.");
-            return false;
+
+            return new() { Message = "Khách hàng này không tồn tại." };
         }
     }
 }

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-
-namespace HocWeb.Service.Models.Authenticate
+﻿namespace HocWeb.Service.Models.Authenticate
 {
     public class UserToken
     {

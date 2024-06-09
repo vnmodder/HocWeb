@@ -1,50 +1,37 @@
 ﻿using HocWeb.Infrastructure;
 using HocWeb.Infrastructure.Entities;
 using HocWeb.Service.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HocWeb.Service.Models;
 
 namespace HocWeb.Service.Services
 {
-    public class OrderDetailService : IOrderDetailService
+    public class OrderDetailService : BaseService,  IOrderDetailService
     {
-        private readonly DataContext datacontext;
+        public OrderDetailService(DataContext context) : base(context) { }
 
-        public OrderDetailService(DataContext context)
-        {
-            datacontext = context;
-        }
-
-        public Task<OrderDetail> Add(OrderDetail model)
+        public Task<ApiResult> Add(OrderDetail model)
         {
           throw new NotImplementedException();
         }
 
-
-        public Task<bool> Delete(int id)
+        public Task<ApiResult> Delete(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IList<OrderDetail>> GetAll()
+        public Task<ApiResult> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public Task<OrderDetail?> GetById(int id)
+        public Task<ApiResult> GetById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> Update(OrderDetail model)
+        public Task<ApiResult> Update(OrderDetail model)
         {
             throw new NotImplementedException();
         }
-
-       
     }
 }

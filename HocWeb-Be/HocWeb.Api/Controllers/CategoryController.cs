@@ -1,8 +1,6 @@
 ﻿using HocWeb.Infrastructure.Entities;
 using HocWeb.Service.Interfaces;
-using HocWeb.Service.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HocWeb.Api.Controllers
@@ -10,7 +8,7 @@ namespace HocWeb.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-    public class CategoryController : ControllerBase
+    public class CategoryController : BaseController
     {
         private readonly ICategoryService _categoryService;
 
@@ -23,11 +21,7 @@ namespace HocWeb.Api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var result = await _categoryService.GetAll();
-            return Ok(new ApiResult<IList<Category>>()
-            {
-                Data = result,
-                StatusCode = 200,
-            });
+            return Response(result);
         }
 
         [HttpGet("get-by-id")]
@@ -36,26 +30,11 @@ namespace HocWeb.Api.Controllers
             try
             {
                 var result = await _categoryService.GetById(id);
-                if (result != null)
-                    return Ok(new ApiResult<Category>()
-                    {
-                        Data = result,
-                        StatusCode = 200,
-                    });
-                return BadRequest(new ApiResult<Category>()
-                {
-                    Data = null,
-                    StatusCode = 500,
-                });
+                return Response(result);
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<Category>()
-                {
-                    Data = null,
-                    Message = e.Message,
-                    StatusCode = 500,
-                });
+                throw new Exception(e.Message);
             }
         }
 
@@ -66,29 +45,11 @@ namespace HocWeb.Api.Controllers
             try
             {
                 var result = await _categoryService.Add(model);
-                if (result != null)
-                {
-                    return Ok(new ApiResult<Category>()
-                    {
-                        Data = result,
-                        StatusCode = 200,
-                    });
-                }
-                return BadRequest(new ApiResult<Category>()
-                {
-                    Data = null,
-                    Message = "Không thể thêm mới ",
-                    StatusCode = 500,
-                });
+                return Response(result);
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<Category>()
-                {
-                    Data = null,
-                    Message = e.Message,
-                    StatusCode = 500,
-                });
+                throw new Exception(e.Message);
             }
         }
 
@@ -99,28 +60,11 @@ namespace HocWeb.Api.Controllers
             try
             {
                 var result = await _categoryService.Delete(id);
-                if (result == true)
-                {
-                    return Ok(new ApiResult<Category>()
-                    {
-                        StatusCode = 200,
-                    });
-                }
-                return BadRequest(new ApiResult<Category>()
-                {
-                    Data = null,
-                    Message = "Không xóa thêm",
-                    StatusCode = 500,
-                });
+                return Response(result);
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<Category>()
-                {
-                    Data = null,
-                    Message = e.Message,
-                    StatusCode = 500,
-                });
+                throw new Exception(e.Message);
             }
         }
 
@@ -131,28 +75,11 @@ namespace HocWeb.Api.Controllers
             try
             {
                 var result = await _categoryService.Update(model);
-                if (result == true)
-                {
-                    return Ok(new ApiResult<Category>()
-                    {
-                        StatusCode = 200,
-                    });
-                }
-                return BadRequest(new ApiResult<Category>()
-                {
-                    Data = null,
-                    Message = "Không thể thêm mới ",
-                    StatusCode = 500,
-                });
+                return Response(result);
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<Category>()
-                {
-                    Data = null,
-                    Message = e.Message,
-                    StatusCode = 500,
-                });
+                throw new Exception(e.Message);
             }
         }
     }

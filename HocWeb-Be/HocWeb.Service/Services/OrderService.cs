@@ -2,39 +2,28 @@
 using HocWeb.Infrastructure.Entities;
 using HocWeb.Infrastructure.Extensions;
 using HocWeb.Service.Interfaces;
+using HocWeb.Service.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.WebSockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HocWeb.Service.Services
 {
-    public class OrderService : IOrderService
+    public class OrderService : BaseService, IOrderService
     {
-        private readonly DataContext datacontext;
+        public OrderService(DataContext context) : base(context) { }
 
-        public OrderService(DataContext context)
+        public async Task<ApiResult> Add(Order model)
         {
-            datacontext = context;
-        }
-
-
-        public async Task<Order?> Add(Order model)
-        {
-          var order = await datacontext.Orders.FirstOrDefaultAsync(x => x.Id == model.Id);
+          var order = await _dataContext.Orders.FirstOrDefaultAsync(x => x.Id == model.Id);
             if (order == null)
             {
-                using var tran = datacontext.Database.BeginTransaction();
+                using var tran = _dataContext.Database.BeginTransaction();
                 try
                 {
-                    model.CreatedDate = DateTime.Now;   
-                    datacontext.Orders.Add(model);
-                    await datacontext.SaveChangesAsync();
+                    model.CreatedDate = _now;   
+                    _dataContext.Orders.Add(model);
+                    await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
-                    return model;
+                    return new( model);
                 }
                 catch (Exception e)
                 {
@@ -42,24 +31,23 @@ namespace HocWeb.Service.Services
                     throw new Exception(e.Message);
                 }
             }
-
-            throw new Exception("Order này đã tồn tại");
+            return new ApiResult() { Message = "Order này đã tồn tại" };
         }
 
 
-        public async Task<bool> Delete(int id)
+        public async Task<ApiResult> Delete(int id)
         {
-            var order = await datacontext.Orders.FirstOrDefaultAsync(x => x.Id == id);
+            var order = await _dataContext.Orders.FirstOrDefaultAsync(x => x.Id == id);
             if (order != null)
             {
-                using var tran = datacontext.Database.BeginTransaction();
+                using var tran = _dataContext.Database.BeginTransaction();
                 try
                 {
-                    order.DeleteDate = DateTime.Now;
-                   // datacontext.Orders.Remove(order);
-                    await datacontext.SaveChangesAsync();
+                    order.DeleteDate = _now;
+                   // _dataContext.Orders.Remove(order);
+                    await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
-                    return true;
+                    return new();
            
                 }
                 catch (Exception e)
@@ -70,27 +58,28 @@ namespace HocWeb.Service.Services
                 }
             }
 
-            throw new Exception("Order này không tồn tại");
+            return new ApiResult() { Message = "Order này không tồn tại" };
         }
 
-
-        public async Task<IList<Order>> GetAll()
+        public async Task<ApiResult> GetAll()
         {
-            var a = await datacontext.Orders.ToListAsync();
-            return await datacontext.Orders.Exist().ToListAsync();
+            var result =  await _dataContext.Orders.Exist().ToListAsync();
+            return new(result);
         }
 
-        public async Task<Order?> GetById(int id)
+        public async Task<ApiResult> GetById(int id)
         {
-            return await datacontext.Orders.Exist().FirstOrDefaultAsync(x => x.Id == id);
+            var result =  await _dataContext.Orders.Exist()
+                .FirstOrDefaultAsync(x => x.Id == id);
+            return new(result);
         }
 
-        public async Task<bool> Update(Order model)
+        public async Task<ApiResult> Update(Order model)
         {
-            var order = await datacontext.Orders.Exist().FirstOrDefaultAsync(x => x.Id == model.Id);
+            var order = await _dataContext.Orders.Exist().FirstOrDefaultAsync(x => x.Id == model.Id);
             if (order != null)
             {
-                using var tran = datacontext.Database.BeginTransaction();
+                using var tran = _dataContext.Database.BeginTransaction();
                 try
                 {
                     
@@ -100,9 +89,10 @@ namespace HocWeb.Service.Services
                     order.Address = model.Address;
                     order.Description = model.Description;
                     order.Amount = model.Amount;
-                    order.UpdatedDate = DateTime.Now;
-                    await datacontext.SaveChangesAsync();
+                    order.UpdatedDate = _now;
+                    await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
+                    return new();
      
                 }
                 catch (Exception e)
@@ -111,7 +101,7 @@ namespace HocWeb.Service.Services
                     throw new Exception(e.Message);
                 }
             }
-            throw new Exception("Order này không tồn tại");
+            return new ApiResult() { Message = "Order này không tồn tại" };
         }
     }
    

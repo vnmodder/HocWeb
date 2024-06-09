@@ -1,17 +1,13 @@
 ﻿using HocWeb.Infrastructure.Entities;
 using HocWeb.Service.Interfaces;
-using HocWeb.Service.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace HocWeb.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductController : BaseController
     {
         private readonly IProductService _productService;
 
@@ -24,11 +20,7 @@ namespace HocWeb.Api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var result = await _productService.GetAll();
-            return Ok(new ApiResult<IList<Product>>()
-            {
-                Data = result,
-                StatusCode = 200,
-            });
+            return Response(result);
         }
 
         [HttpGet("get-by-id")]
@@ -37,26 +29,11 @@ namespace HocWeb.Api.Controllers
             try
             {
                 var result = await _productService.GetById(id);
-                if (result != null)
-                    return Ok(new ApiResult<Product>()
-                    {
-                        Data = result,
-                        StatusCode = 200,
-                    });
-                return BadRequest(new ApiResult<Product>()
-                {
-                    Data = null,
-                    StatusCode = 500,
-                });
+                return Response(result);
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<Product>()
-                {
-                    Data = null,
-                    Message = e.Message,
-                    StatusCode = 500,
-                });
+                throw new Exception(e.Message);
             }
         }
 
@@ -67,29 +44,11 @@ namespace HocWeb.Api.Controllers
             try
             {
                 var result = await _productService.Add(model);
-                if (result != null)
-                {
-                    return Ok(new ApiResult<Product>()
-                    {
-                        Data = result,
-                        StatusCode = 200,
-                    });
-                }
-                return BadRequest(new ApiResult<Product>()
-                {
-                    Data = null,
-                    Message = "Không thể thêm!.",
-                    StatusCode = 500,
-                });
+                return Response(result);
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<Product>()
-                {
-                    Data = null,
-                    Message = e.Message,
-                    StatusCode = 500,
-                });
+                throw new Exception(e.Message);
             }
         }
 
@@ -100,29 +59,11 @@ namespace HocWeb.Api.Controllers
             try
             {
                 var result = await _productService.Update(model);
-                if (result)
-                {
-                    return Ok(new ApiResult<Product>()
-                    {
-                        Data = model,
-                        StatusCode = 200,
-                    });
-                }
-                return BadRequest(new ApiResult<Product>()
-                {
-                    Data = null,
-                    Message = "Không thể cập nhật!.",
-                    StatusCode = 500,
-                });
+                return Response(result);
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<Product>()
-                {
-                    Data = null,
-                    Message = e.Message,
-                    StatusCode = 500,
-                });
+                throw new Exception(e.Message);
             }
         }
 
@@ -133,27 +74,11 @@ namespace HocWeb.Api.Controllers
             try
             {
                 var result = await _productService.Delete(id);
-                if (result)
-                {
-                    return Ok(new ApiResult<object>(null)
-                    {
-                        StatusCode = 200,
-                        Message = "Xóa thành công!"
-                    });
-                }
-                return BadRequest(new ApiResult<object>(null)
-                {
-                    Message = "Xóa thất bại!",
-                    StatusCode = 500,
-                });
+                return Response(result);
             }
             catch (Exception e)
             {
-                return BadRequest(new ApiResult<object>(null)
-                {
-                    Message = e.Message,
-                    StatusCode = 500,
-                });
+                throw new Exception(e.Message);
             }
         }
     }

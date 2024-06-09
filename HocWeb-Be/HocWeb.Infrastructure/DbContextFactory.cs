@@ -1,20 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HocWeb.Infrastructure
 {
-        public interface IDbContextFactory
+    public interface IDbContextFactory
         {
-            /// <summary>
-            /// Creates the key seeb context instance.
-            /// </summary>
-            /// <returns></returns>
-            public DataContext CreateDataContextInstance();
+        /// <summary>
+        /// Creates the data context instance.
+        /// </summary>
+        /// <returns></returns>
+        public DataContext CreateDataContextInstance();
         }
 
         public class DbContextFactory : IDbContextFactory

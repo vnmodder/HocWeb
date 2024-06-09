@@ -1,23 +1,17 @@
 ﻿using HocWeb.Infrastructure;
 using HocWeb.Infrastructure.Entities;
+using HocWeb.Infrastructure.Extensions;
 using HocWeb.Service.Interfaces;
+using HocWeb.Service.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace HocWeb.Service.Services
 {
-    public class ProductService : IProductService
+    public class ProductService : BaseService, IProductService
     {
-        private readonly DataContext _dataContext;
+        public ProductService(DataContext dataContext) : base(dataContext) { }
 
-        public ProductService(DataContext dataContext)
-        {
-            _dataContext = dataContext;
-        }
-
-        public async Task<Product?> Add(Product model)
+        public async Task<ApiResult> Add(Product model)
         {
             var product = await _dataContext.Products
                 .FirstOrDefaultAsync(x => x.Name == model.Name && x.CategoryId == model.CategoryId);
@@ -26,11 +20,11 @@ namespace HocWeb.Service.Services
                 using var tran = await _dataContext.Database.BeginTransactionAsync();
                 try
                 {
-                    model.CreatedDate = DateTime.Now;
+                    model.CreatedDate = _now;
                     _dataContext.Products.Add(model);
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
-                    return model;
+                    return new(model);
                 }
                 catch (Exception e)
                 {
@@ -39,10 +33,10 @@ namespace HocWeb.Service.Services
                 }
             }
 
-            throw new Exception("Sản phẩm này đã tồn tại!.");
+            return new ApiResult() { Message = "Sản phẩm này đã tồn tại!." };
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<ApiResult> Delete(int id)
         {
             var product = await _dataContext.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (product != null)
@@ -50,11 +44,11 @@ namespace HocWeb.Service.Services
                 using var tran = await _dataContext.Database.BeginTransactionAsync();
                 try
                 {
-                    product.DeleteDate = DateTime.Now;
-                    _dataContext.Products.Remove(product);
+                    product.DeleteDate = _now;
+                    //_dataContext.Products.Remove(product);
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
-                    return true;
+                    return new();
                 }
                 catch (Exception e)
                 {
@@ -63,22 +57,28 @@ namespace HocWeb.Service.Services
                 }
             }
 
-            throw new Exception("Không tìm thấy sản phẩm này.");
+            return new ApiResult() { Message = "Không tìm thấy sản phẩm này." };
         }
 
-        public async Task<IList<Product>> GetAll()
+        public async Task<ApiResult> GetAll()
         {
-            return await _dataContext.Products.ToListAsync();
+            var result = await _dataContext.Products.Exist().ToListAsync();
+            return new(result);
+
         }
 
-        public async Task<Product?> GetById(int id)
+        public async Task<ApiResult> GetById(int id)
         {
-            return await _dataContext.Products.FirstOrDefaultAsync(x => x.Id == id);
+            var result = await _dataContext.Products.Exist()
+                .FirstOrDefaultAsync(x => x.Id == id);
+            return new(result);
+
         }
 
-        public async Task<bool> Update(Product model)
+        public async Task<ApiResult> Update(Product model)
         {
-            var product = await _dataContext.Products.FirstOrDefaultAsync(x => x.Id == model.Id);
+            var product = await _dataContext.Products.Exist()
+                .FirstOrDefaultAsync(x => x.Id == model.Id);
             if (product != null)
             {
                 using var tran = await _dataContext.Database.BeginTransactionAsync();
@@ -98,11 +98,11 @@ namespace HocWeb.Service.Services
                     product.Special = model.Special;
                     product.Latest = model.Latest;
                     product.Views = model.Views;
-                    product.UpdatedDate = DateTime.Now;
+                    product.UpdatedDate = _now;
 
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
-                    return true;
+                    return new();
                 }
                 catch (Exception e)
                 {
@@ -111,7 +111,7 @@ namespace HocWeb.Service.Services
                 }
             }
 
-            throw new Exception("Không tìm thấy sản phẩm này.");
+            return new ApiResult() { Message = "Không tìm thấy sản phẩm này." };
         }
     }
 }

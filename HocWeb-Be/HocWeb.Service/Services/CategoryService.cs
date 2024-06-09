@@ -2,25 +2,19 @@
 using HocWeb.Infrastructure.Entities;
 using HocWeb.Infrastructure.Extensions;
 using HocWeb.Service.Interfaces;
+using HocWeb.Service.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HocWeb.Service.Services
 {
-    public class CategoryService : ICategoryService
+    public class CategoryService : BaseService, ICategoryService
     {
-        private readonly DataContext _dataContext;
 
-        public CategoryService(DataContext dataContext)
+        public CategoryService(DataContext dataContext) : base(dataContext)
         {
-            _dataContext = dataContext;
         }
 
-        public async Task<Category?> Add(Category model)
+        public async Task<ApiResult> Add(Category model)
         {
             var cateGory = await _dataContext.Categories.FirstOrDefaultAsync(x => x.Name == model.Name);
             if (cateGory == null)
@@ -28,35 +22,11 @@ namespace HocWeb.Service.Services
                 using var tran = _dataContext.Database.BeginTransaction();
                 try
                 {
-                    model.CreatedDate = DateTime.Now;
-                     _dataContext.Categories.Add(model);
+                    model.CreatedDate = _now;
+                    _dataContext.Categories.Add(model);
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
-                    return model;
-                }
-                catch(Exception e)
-                {
-                    await tran.RollbackAsync();
-                    throw new Exception(e.Message);
-                }
-            }
-
-            throw new Exception("Category này đã tồn tại");
-        }
-
-        public async Task<bool> Delete(int id)
-        {
-             var cateGory = await _dataContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
-            if (cateGory != null)
-            {
-                using var tran = _dataContext.Database.BeginTransaction();
-                try
-                {
-                    //_dataContext.Remove(cateGory); bỏ cái này
-                    cateGory.DeleteDate = DateTime.Now;
-                    await _dataContext.SaveChangesAsync();
-                    await tran.CommitAsync();
-                    return true;
+                    return new(model);
                 }
                 catch (Exception e)
                 {
@@ -65,23 +35,53 @@ namespace HocWeb.Service.Services
                 }
             }
 
-            throw new Exception("Không tìm thấy Category này");
+            return new()
+            {
+                Message = "Category này đã tồn tại",
+            };
         }
 
-        public async Task<IList<Category>> GetAll()
+        public async Task<ApiResult> Delete(int id)
         {
-            return await _dataContext.Categories.Exist().ToListAsync();
+            var cateGory = await _dataContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
+            if (cateGory != null)
+            {
+                using var tran = _dataContext.Database.BeginTransaction();
+                try
+                {
+                    cateGory.DeleteDate = _now;
+                    await _dataContext.SaveChangesAsync();
+                    await tran.CommitAsync();
+                    return new();
+                }
+                catch (Exception e)
+                {
+                    await tran.RollbackAsync();
+                    throw new Exception(e.Message);
+                }
+            }
+            return new()
+            {
+                Message = "Không tìm thấy Category này"
+            };
         }
 
-        public async Task<Category?> GetById(int id)
+        public async Task<ApiResult> GetAll()
         {
-            return await _dataContext.Categories.Exist().FirstOrDefaultAsync(x=>x.Id == id);
+            var result = await _dataContext.Categories.Exist().ToListAsync();
+            return new(result);
         }
 
-        public async Task<bool> Update(Category model)
+        public async Task<ApiResult> GetById(int id)
+        {
+            var result = await _dataContext.Categories.Exist().FirstOrDefaultAsync(x => x.Id == id);
+            return new(result);
+        }
+
+        public async Task<ApiResult> Update(Category model)
         {
             var cateGory = await _dataContext.Categories.Exist()
-                            .FirstOrDefaultAsync(x => x.Id == model.Id);
+                             .FirstOrDefaultAsync(x => x.Id == model.Id);
 
             if (cateGory != null)
             {
@@ -92,11 +92,11 @@ namespace HocWeb.Service.Services
                     cateGory.Image = model.Image;
                     cateGory.Icon = model.Icon;
                     cateGory.NameVN = model.NameVN;
-                    cateGory.UpdatedDate = DateTime.Now;
-                    
+                    cateGory.UpdatedDate = _now;
+
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
-                    return true;
+                    return new();
                 }
                 catch (Exception e)
                 {
@@ -105,7 +105,7 @@ namespace HocWeb.Service.Services
                 }
             }
 
-            throw new Exception("Không tìm thấy Category này");
+            return new() { Message = "Không tìm thấy Category này" };
         }
     }
 }
