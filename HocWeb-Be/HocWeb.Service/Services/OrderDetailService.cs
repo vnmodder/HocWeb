@@ -19,30 +19,90 @@ namespace HocWeb.Service.Services
             datacontext = context;
         }
 
-        public Task<OrderDetail> Add(OrderDetail model)
+        public async Task<OrderDetail> Add(OrderDetail model)
         {
-          throw new NotImplementedException();
+            using var tran = datacontext.Database.BeginTransaction();
+            try
+            {
+                model.CreatedDate = DateTime.Now;
+                datacontext.OrderDetails.Add(model);
+                await datacontext.SaveChangesAsync();
+                await tran.CommitAsync();
+                return model;
+            }
+            catch (Exception e)
+            {
+                await tran.RollbackAsync();
+                throw new Exception(e.Message);
+            }
         }
 
 
-        public Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            var order = await datacontext.OrderDetails.FirstOrDefaultAsync(x => x.Id == id);
+            if (order != null)
+            {
+                using var tran = datacontext.Database.BeginTransaction();
+                try
+                {
+                    order.DeleteDate = DateTime.Now;
+                    datacontext.OrderDetails.Remove(order);
+                    await datacontext.SaveChangesAsync();
+                    await tran.CommitAsync();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    await tran.RollbackAsync();
+                    throw new Exception(e.Message);
+                }
+            }
+            throw new Exception("Sản phẩm này không tồn tại");
         }
 
-        public Task<IList<OrderDetail>> GetAll()
+        public async Task<IList<OrderDetail>> GetAll()
         {
-            throw new NotImplementedException();
+            return await datacontext.OrderDetails.ToListAsync();
         }
 
-        public Task<OrderDetail?> GetById(int id)
+        public async Task<OrderDetail?> GetById(int id)
         {
-            throw new NotImplementedException();
+            return await datacontext.OrderDetails.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<bool> Update(OrderDetail model)
+        public async Task<IList<OrderDetail>> GetByOrderId(int orderId)
         {
-            throw new NotImplementedException();
+            return await datacontext.OrderDetails.Where(x => x.OrderId == orderId).ToListAsync();
+        }
+          
+
+        
+
+        public async Task<bool> Update(OrderDetail model)
+        {
+            var order = await datacontext.OrderDetails.FirstOrDefaultAsync(x => x.Id == model.Id);
+            if (order != null)
+            {
+                using var tran = datacontext.Database.BeginTransaction();
+                try
+                {
+                    order.ProductId = model.ProductId;
+                    order.Quantity = model.Quantity;
+                    order.Discount = model.Discount;
+                    order.UnitPrice = model.UnitPrice;
+                    order.UpdatedDate = DateTime.Now;
+                    await datacontext.SaveChangesAsync();
+                    await tran.CommitAsync();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    await tran.RollbackAsync();
+                    throw new Exception(e.Message);
+                }
+            }
+            throw new Exception("Sản phẩm này không tồn tại");
         }
 
        
