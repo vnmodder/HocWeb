@@ -53,11 +53,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAnyCorsPolicy",
         builder => builder
+        .WithOrigins("*")
         .AllowAnyMethod()
-        .AllowAnyHeader()
-        .SetIsOriginAllowed(_ => true)
-        .AllowCredentials()
-        .WithExposedHeaders("Content-Disposition"));
+        .AllowAnyHeader());
 });
 
 // Add Application project's services.
@@ -75,8 +73,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 
+app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseCors("AllowAnyCorsPolicy");
 app.UseAuthorization();
 
 app.MapControllers();
