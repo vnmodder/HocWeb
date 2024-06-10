@@ -13,3 +13,6 @@ Shop_Source/MultiShop/MultiShop/obj
 .vs
 .vs/
 HocWeb-Be/.cr
+hoc-web/node_modules
+hoc-web/.vite
+hoc-web/.vscode
