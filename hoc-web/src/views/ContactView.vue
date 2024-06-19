@@ -22,7 +22,6 @@
                   <div class="form-group">
                     <label class="label" for="email">Email</label>
                     <input
-                      type="email"
                       class="form-control"
                       v-model="modelData.email"
                       placeholder="Email"
@@ -54,10 +53,10 @@
                 </div>
                 <div class="col-md-12 mt-2">
                   <div class="form-group">
-                    <input
+                    <input @click="onSent"
                       type="submit"
                       value="Gửi tin nhắn"
-                      class="btn btn-primary"
+                      class="btn btn-dark"
                     />
                     <div class="submitting"></div>
                   </div>
@@ -81,7 +80,7 @@
         <div class="col-md-3">
           <div class="dbox w-100 text-center">
             <div class="icon d-flex align-items-center justify-content-center">
-              <span class="fa fa-map-marker"></span>
+              <span class="fa fa-map-marker  text-white"></span>
             </div>
             <div class="text">
               <p>
@@ -94,7 +93,7 @@
         <div class="col-md-3">
           <div class="dbox w-100 text-center">
             <div class="icon d-flex align-items-center justify-content-center">
-              <span class="fa fa-phone"></span>
+              <span class="fa fa-phone  text-white"></span>
             </div>
             <div class="text">
               <p>
@@ -107,7 +106,7 @@
         <div class="col-md-3">
           <div class="dbox w-100 text-center">
             <div class="icon d-flex align-items-center justify-content-center">
-              <span class="fa fa-paper-plane"></span>
+              <span class="fa fa-paper-plane  text-white"></span>
             </div>
             <div class="text">
               <p>
@@ -120,7 +119,7 @@
         <div class="col-md-3">
           <div class="dbox w-100 text-center">
             <div class="icon d-flex align-items-center justify-content-center">
-              <span class="fa fa-globe"></span>
+              <span class="fa fa-globe text-white"></span>
             </div>
             <div class="text">
               <p>
@@ -149,6 +148,9 @@ const modelData = ref({
   message:'',
   subject:''
 })
+const onSent =()=>{
+  alert("Đã gửi thành công! Vui lòng chờ phản hồi của chúng tôi")
+}
 
 const int =() =>{
 if(user.value){
@@ -180,13 +182,13 @@ int()
   color: #000;
 }
 .dbox p a {
-  color: #2553b8;
+  color: #212529;
 }
 .dbox .icon {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: #2553b8;
+  background: #212529;
   margin: 0 auto;
   margin-bottom: 20px;
 }
