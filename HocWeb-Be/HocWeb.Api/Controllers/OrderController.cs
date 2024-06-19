@@ -1,5 +1,6 @@
 ﻿using HocWeb.Infrastructure.Entities;
 using HocWeb.Service.Interfaces;
+using HocWeb.Service.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -50,6 +51,22 @@ namespace HocWeb.Api.Controllers
                 throw new Exception(e.Message);
             }
         }
+
+        [Authorize]
+        [HttpPost("add-new")]
+        public async Task<IActionResult> CreateNew([FromBody] OrderModel model)
+        {
+            try
+            {
+                var result = await orderService.CreateNew(model);
+                return Response(result);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         [Authorize]
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete([FromQuery] int id)

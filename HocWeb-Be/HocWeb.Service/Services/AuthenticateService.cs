@@ -159,6 +159,7 @@ namespace HocWeb.Service.Services
             return new UserToken
             {
                 UserId = user.Id,
+                Username= user.UserName,
                 Email = user.Email,
                 Token = token,
                 Expires = expires
