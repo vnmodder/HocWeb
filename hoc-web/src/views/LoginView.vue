@@ -2,7 +2,7 @@
 <div class="container-xxl py-5">
         <div class="container">
             <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Đăng Nhập</h6>
+                <h6 class="section-title text-center fw-bold px-3">Đăng Nhập</h6>
             </div>
             <div class="row g-4 justify-content-center ">
                 <div class="container">
@@ -16,10 +16,10 @@
                                 <input class="form-control border-2 rounded-pill w-100 py-3 ps-4 pe-5" type="password"
                                     placeholder="Mật khẩu" v-model="password">
                             </div>
-                            <button type="button" class="btn rounded-pill py-2 px-4  text-light mt-3 bg-primary me-2 "
+                            <button type="button" class="btn rounded-pill py-2 px-4  text-light mt-3 bg-dark me-2 "
                                 @click="handleLogin">Đăng nhập</button>
                         </div>
-                        <RouterLink class="animated slideInDown" to="/register">Chưa có tài khoản?</RouterLink>
+                        <!-- <RouterLink class="animated slideInDown" to="/register">Chưa có tài khoản?</RouterLink> -->
                     </div>
                 </div>
             </div>

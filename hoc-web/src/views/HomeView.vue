@@ -1,43 +1,69 @@
 <template>
-  <main>
-    <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
-      <div v-for="item in items" class="col">
-        <div class="card mb-4 rounded-3 shadow-sm">
-          <div class="card-header py-3">
-            <h4 class="my-0 fw-normal">{{ item.nameVN }}</h4>
-          </div>
-          <div class="card-body">
-            <h1 class="card-title pricing-card-title">{{ item.name }}</h1>
-            <ul class="list-unstyled mt-3 mb-4">
-              <li>
-                <img :src="item.image" /></li>
-              <li>{{ item.icon }}</li>
-            </ul>
-            <!-- <button type="button" class="w-100 btn btn-lg btn-outline-primary">Sign up for free</button> -->
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+   <header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Shop Học Web</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">Demo shop với .NET Core API và Vue Js 3</p>
+                </div>
+            </div>
+        </header>
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 mt-5">
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    <div v-for="(item, index) in products" :key="index" class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Sale badge-->
+                            <div v-if="index%2==1" class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+                            <!-- Product image-->
+                             <a :href="'/product-detail?id=' +item.id ">
+                               <img class="card-img-top" :src="item.image" alt="..." />
+                             </a>
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">{{ item.name }}</h5>
+                                    <!-- Product reviews-->
+                                    <!-- <div class="d-flex justify-content-center small text-warning mb-2">
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                        <div class="bi-star-fill"></div>
+                                    </div> -->
+                                    <!-- Product price-->
+                                    <!-- <span class="text-muted text-decoration-line-through">$20.00</span> -->
+                                     <span>{{  new Intl.NumberFormat('vi-vn').format(item.unitPrice) }}đ</span>
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent d-flex justify-content-center" >
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" :href="'/product-detail?id=' +item.id " >Xem</a></div>
+                                <div class="text-center"><button class="btn btn-outline-dark mt-auto ms-2" >Thêm vào giỏ</button></div>
+                            </div>
+                        </div>
+                    </div>     
+                </div>
+            </div>
+        </section>
 </template>
 
 <script setup lang="ts">
 import homeApi from '@/api/home.api'
 import { ref } from 'vue'
 
-const items = ref([]);
+const products = ref<any>([]);
 
 const fetchData = async () => {
-  const response = await homeApi.getAllCategory();
+  const response = await homeApi.getAllProduct();
   if (response && response.data.result.isSuccess) {
-    items.value = response.data.result.data
+    products.value = response.data.result.data
   }
   else {
-    items.value = []
+    products.value = []
     alert(response.data.result.message)
   }
 }
-
 
 fetchData();
 </script>

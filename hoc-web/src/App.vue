@@ -2,23 +2,22 @@
 import { RouterLink, RouterView } from "vue-router";
 import PageNavbar from "@/components/PageNavbar.vue";
 import PageFooter from "@/components/PageFooter.vue";
+
+import '@/assets/bootstrap.min.css'
 </script>
 
 <template>
-  <div class="col-md-10 mx-auto">
-  <!-- Header -->
   <PageNavbar />
-  <!-- end header  -->
-
-  <!-- content -->
-  <RouterView />
-  <!-- end content -->
-
-  <!-- footer-->
-
-  <PageFooter />
-
-  <!-- end footer -->
+  <div class="hocweb-app">
+    <RouterView />
   </div>
-
+  <PageFooter />
 </template>
+
+<style scoped>
+
+.hocweb-app{
+  min-height: calc(100vh - 11.2rem);
+}
+
+</style>
