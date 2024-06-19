@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
+import {  RouterView } from "vue-router";
 import PageNavbar from "@/components/PageNavbar.vue";
 import PageFooter from "@/components/PageFooter.vue";
 

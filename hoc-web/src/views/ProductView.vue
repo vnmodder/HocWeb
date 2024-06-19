@@ -1,7 +1,7 @@
 <template>
   <section>
     <div class="container px-4 px-lg-5 mt-5">
-      <h1> {{ categoryName??'Tất cả sản phẩm' }}</h1>
+      <h2 class="fw-bolder mb-4">{{ categoryName ?? "Tất cả sản phẩm" }}</h2>
       <div
         class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center"
       >
@@ -16,7 +16,9 @@
               Sale
             </div>
             <!-- Product image-->
-            <img class="card-img-top" :src="item.image" alt="..." />
+            <a :href="'/product-detail?id=' + item.id">
+              <img class="card-img-top" :src="item.image" alt="..." />
+            </a>
             <!-- Product details-->
             <div class="card-body p-4">
               <div class="text-center">
@@ -33,10 +35,8 @@
                 <!-- Product price-->
                 <!-- <span class="text-muted text-decoration-line-through">$20.00</span> -->
                 <span
-                  >{{
-                    new Intl.NumberFormat("vi-vn").format(item.unitPrice)
-                  }}đ</span
-                >
+                  >{{ new Intl.NumberFormat("vi-vn").format(item.unitPrice) }}đ
+                </span>
               </div>
             </div>
             <!-- Product actions-->
@@ -44,10 +44,16 @@
               class="card-footer p-4 pt-0 border-top-0 bg-transparent d-flex justify-content-center"
             >
               <div class="text-center">
-                <div class="text-center"><a class="btn btn-outline-dark mt-auto" :href="'/product-detail?id=' +item.id " >Xem</a></div>
+                <div class="text-center">
+                  <a
+                    class="btn btn-outline-dark mt-auto"
+                    :href="'/product-detail?id=' + item.id"
+                    >Xem</a
+                  >
+                </div>
               </div>
               <div class="text-center">
-                <button class="btn btn-outline-dark mt-auto ms-2">
+                <button class="btn btn-outline-dark mt-auto ms-2" @click="addToCart(item)">
                   Thêm vào giỏ
                 </button>
               </div>
@@ -60,22 +66,29 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { useRoute } from "vue-router";
 import productApi from "@/api/product.api";
-import { ref } from "vue";
+import { useCartStore } from "@/stores/cart";
+import { storeToRefs } from "pinia";
+import { userStore } from "../stores/auth";
+
+const authStore = userStore();
+const { user } = storeToRefs(authStore);
 
 const route = useRoute();
 const products = ref<any>([]);
 const categoryName = ref<any>();
 
 const fetchData = async () => {
-    console.log(route.query)
-    if(route.query.categoryId){
-        const cateRes = await productApi.getCategoryById(route.query.categoryId?.toString());
-        if (cateRes && cateRes.data.result.isSuccess) {
-            categoryName.value= cateRes.data.result.data?.nameVN
-        }
+  if (route.query.categoryId) {
+    const cateRes = await productApi.getCategoryById(
+      route.query.categoryId?.toString()
+    );
+    if (cateRes && cateRes.data.result.isSuccess) {
+      categoryName.value = cateRes.data.result.data?.nameVN;
     }
+  }
 
   const response = await productApi.getAllProduct();
   if (response && response.data.result.isSuccess) {
@@ -92,5 +105,20 @@ const fetchData = async () => {
   }
 };
 
-fetchData();
+const addToCart = (item: any) => {
+  if(!user.value){
+    alert('Hãy đăng nhập để thực hiện chức năng này')
+    return
+  }
+  
+  const product =  {
+    id: item.id,
+    name: item.name,
+    unitPrice: item.unitPrice,
+    quantity : 1
+  }
+  useCartStore().addToCart(product);
+};
+
+  fetchData();
 </script>
