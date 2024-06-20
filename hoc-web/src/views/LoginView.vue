@@ -34,7 +34,7 @@
                 Đăng nhập
               </button>
             </div>
-            <!-- <RouterLink class="animated slideInDown" to="/register">Chưa có tài khoản?</RouterLink> -->
+            <RouterLink class="animated slideInDown mt-3 nav-link fw-bold" to="/register">Chưa có tài khoản?</RouterLink>
           </div>
         </div>
       </div>

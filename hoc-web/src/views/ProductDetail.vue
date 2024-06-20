@@ -42,7 +42,7 @@
   </section>
   <section class="bg-light pt-2">
     <div class="container px-2 px-lg-5 mt-1">
-      <h2 class="fw-bolder mb-4">Sản phẩm cùng loại</h2>
+      <h2 class="fw-bolder mb-4">Tài khoản cùng loại</h2>
       <div
         class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center"
       >

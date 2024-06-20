@@ -15,7 +15,7 @@ export default {
       return await baseApi.postAuthenticate('Authenticate/register', {
         userName,
         password,
-        name,
+        fullName: name,
         email,
       });
     }

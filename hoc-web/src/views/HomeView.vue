@@ -2,17 +2,37 @@
   <header class="bg-dark py-5">
     <div class="container px-4 px-lg-5 my-5">
       <div class="text-center text-white">
-        <h1 class="display-4 fw-bolder">Shop Học Web</h1>
+        <h1 class="display-4 fw-bolder">Shop Account Học Web</h1>
         <p class="lead fw-normal text-white-50 mb-0">
-          Demo shop với .NET Core API và Vue Js 3
+          Demo shop account với .NET Core API và Vue Js 3
         </p>
       </div>
     </div>
   </header>
-  <section class="py-5">
-    <h2 class="fw-bolder mb-4 text-center">Sản phẩm mới</h2>
-
+  <section class="pt-5">
+    <h2 class="fw-bolder text-center">Danh mục</h2>
     <div class="container px-4 px-lg-5 mt-5">
+      <div
+        class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center"
+      >
+        <div v-for="(item, index) in categories" :key="index" class="col mb-5">
+          <a class="nav-link" :href="'/product?categoryId=' + item.id">
+            <div class="card h-100">
+              <img class="card-img-top" :src="item.image" alt="..." />
+              <div class="card-body p-4">
+                <div class="text-center">
+                  <h5 class="fw-bolder">{{ item.nameVN }}</h5>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section >
+    <h2 class="fw-bolder mb-4 text-center">Các tài khoản hot</h2>
+    <div class="container px-4 px-lg-5 mt-2">
       <div
         class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center"
       >
@@ -64,7 +84,10 @@
                 >
               </div>
               <div class="text-center">
-                <button class="btn btn-outline-dark mt-auto ms-2" @click="addToCart(item)">
+                <button
+                  class="btn btn-outline-dark mt-auto ms-2"
+                  @click="addToCart(item)"
+                >
                   Thêm vào giỏ
                 </button>
               </div>
@@ -77,7 +100,6 @@
 </template>
 
 <script setup lang="ts">
-
 import homeApi from "@/api/home.api";
 import { ref } from "vue";
 import { useCartStore } from "@/stores/cart";
@@ -88,19 +110,20 @@ const authStore = userStore();
 const { user } = storeToRefs(authStore);
 
 const products = ref<any>([]);
+const categories = ref<any>([]);
 
 const addToCart = (item: any) => {
-  if(!user.value){
-    alert('Hãy đăng nhập để thực hiện chức năng này')
-    return
+  if (!user.value) {
+    alert("Hãy đăng nhập để thực hiện chức năng này");
+    return;
   }
 
-  const product =  {
+  const product = {
     id: item.id,
     name: item.name,
     unitPrice: item.unitPrice,
-    quantity : 1
-  }
+    quantity: 1,
+  };
   useCartStore().addToCart(product);
 };
 
@@ -110,9 +133,17 @@ const fetchData = async () => {
     products.value = response.data.result.data;
   } else {
     products.value = [];
-    alert(response?.data.result.message??'Lỗi');
+    alert(response?.data.result.message ?? "Lỗi");
+  }
+
+  const response2 = await homeApi.getAllCategory();
+  if (response2 && response2.data.result.isSuccess) {
+    categories.value = response2.data.result.data;
+  } else {
+    categories.value = [];
+    alert(response2?.data.result.message ?? "Lỗi");
   }
 };
 
-  fetchData();
+fetchData();
 </script>
