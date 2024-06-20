@@ -73,6 +73,11 @@
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <!-- <li><a class="dropdown-item" href="#!">Thông tin</a></li> -->
               <li>
+                <a class="dropdown-item" href="/order"
+                  >Lịch sử đặt hàng</a
+                >
+              </li>
+              <li>
                 <a class="dropdown-item" @click="logout" href="/login"
                   >Đăng xuất</a
                 >

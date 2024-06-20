@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 import type { AxiosResponse } from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'https://tdm-api.squirrel.io.vn/api/',
+  baseURL: import.meta.env.VITE_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },

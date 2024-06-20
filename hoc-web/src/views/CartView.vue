@@ -48,7 +48,7 @@
         </h5>
       </div>
       <div class="d-flex justify-content-center">
-        <a class="btn btn-dark fw-bolder" href="/order">Tiến hành thanh toán</a>
+        <a class="btn btn-dark fw-bolder" href="/checkout">Tiến hành thanh toán</a>
       </div>
       <h5 class="mb-4 text-center mt-2">
         Tổng tiền đang chọn:

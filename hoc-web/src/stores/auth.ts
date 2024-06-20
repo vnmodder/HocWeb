@@ -4,8 +4,7 @@ import { defineStore } from 'pinia';
 export const userStore =  defineStore({
     id: 'auth',
     state: () => ({
-        // initialize state from local storage to enable user to stay logged in
-        user: JSON.parse(localStorage.getItem('user')?.toString()??"null") as UserInfoModel | null,
+        user: JSON.parse(localStorage.getItem('user')as string),
     }),
     actions: {
         async login(user:UserInfoModel) {

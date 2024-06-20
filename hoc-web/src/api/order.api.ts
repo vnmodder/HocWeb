@@ -1,7 +1,7 @@
 import baseApi from "./base.api";
 
 export default {
-  createNewOrder: async (data:any) => {
-    return await baseApi.post("Order/add-new", data);
+  getAllOrder: async (userId: number| string) => {
+    return await baseApi.get("Order/get-by-user-id?userId=" +userId);
   },
 };

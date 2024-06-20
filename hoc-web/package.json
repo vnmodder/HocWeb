@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode development",
+    "prod": "vite --mode production",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
@@ -13,6 +14,7 @@
   "dependencies": {
     "axios": "^1.7.2",
     "js-cookie": "^3.0.5",
+    "moment": "^2.30.1",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"

@@ -6,6 +6,7 @@ import ProductView from '@/views/ProductView.vue'
 import ProductDetail from '@/views/ProductDetail.vue'
 import ContactView from '@/views/ContactView.vue'
 import CartView from '@/views/CartView.vue'
+import Checkout from '@/views/CheckoutView.vue'
 import OrderView from '@/views/OrderView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 
@@ -31,6 +32,11 @@ const router = createRouter({
       path: '/cart',
       name: 'cart',
       component: CartView
+    },
+    {
+      path: '/checkout',
+      name: 'checkout',
+      component: Checkout
     },
     {
       path: '/order',
