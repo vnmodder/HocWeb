@@ -68,10 +68,10 @@
               role="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
-              >Chào bạn <strong>{{ user?.username }}</strong></a
+              >Chào bạn <strong>{{ user?.fullName }}</strong></a
             >
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <!-- <li><a class="dropdown-item" href="#!">Thông tin</a></li> -->
+              <li><a class="dropdown-item" href="/user-info">Thông tin</a></li>
               <li>
                 <a class="dropdown-item" href="/order"
                   >Lịch sử đặt hàng</a

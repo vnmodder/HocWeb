@@ -67,6 +67,7 @@ const handleLogin = async () => {
         userId: response.result.data.userId,
         username: response.result.data.username,
         email: response.result.data.email,
+        fullName: response.result.data.fullName,
       });
       Cookies.set("token", response.result.data.token);
       router.push("/");

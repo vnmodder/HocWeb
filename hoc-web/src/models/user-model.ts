@@ -7,6 +7,7 @@ export interface LoginModel{
     username:string,
     userId:Number,
     email: string,
+    fullName?: string,
   }
   
  export  interface LoginResponseModel{

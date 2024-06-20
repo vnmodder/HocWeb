@@ -9,6 +9,7 @@ import CartView from '@/views/CartView.vue'
 import Checkout from '@/views/CheckoutView.vue'
 import OrderView from '@/views/OrderView.vue'
 import RegisterView from '@/views/RegisterView.vue'
+import UserInfoView from '@/views/UserInfoView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,6 +43,11 @@ const router = createRouter({
       path: '/order',
       name: 'order',
       component: OrderView
+    },
+    {
+      path: '/user-info',
+      name: 'user-info',
+      component: UserInfoView
     },
     {
       path: '/product/:categoryId?',
