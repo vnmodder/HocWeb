@@ -98,10 +98,8 @@ namespace HocWeb.Service.Services
 
                 if (!newUserResult.Succeeded)
                 {
-                    return new ApiResult()
-                    {
-                        Message = "User creation failed"
-                    };
+                    var err = newUserResult.Errors.Select(x => x.Description);
+                    return new() { Message = string.Join('\n', err) };
                 }
 
                 if (!await _roleManager.RoleExistsAsync(RoleConstants.USER.ToString()))
@@ -161,6 +159,7 @@ namespace HocWeb.Service.Services
                 UserId = user.Id,
                 Username= user.UserName,
                 Email = user.Email,
+                FullName = user.FullName,
                 Token = token,
                 Expires = expires
             };

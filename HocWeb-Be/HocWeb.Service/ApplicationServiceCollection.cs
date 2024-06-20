@@ -33,6 +33,7 @@ namespace HocWeb.Service
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<ISupplierService, SupplierService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IUserService, UserService>();
             #endregion
             return services;
         }
