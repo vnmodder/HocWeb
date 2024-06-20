@@ -127,6 +127,13 @@ namespace HocWeb.Service.Services
             return new(result);
         }
 
+        public async Task<ApiResult> GetOrderByUserId(int userId)
+        {
+            var result = await _dataContext.Orders.Exist()
+               .Where(x => x.CustomerId == userId).ToListAsync();
+            return new(result);
+        }
+
         public async Task<ApiResult> Update(Order model)
         {
             var order = await _dataContext.Orders.Exist().FirstOrDefaultAsync(x => x.Id == model.Id);

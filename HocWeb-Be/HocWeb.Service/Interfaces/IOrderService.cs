@@ -10,5 +10,6 @@ namespace HocWeb.Service.Interfaces
         /// </summary>
         /// <param name="model">The model.</param>
         Task<ApiResult> CreateNew(OrderModel model);
+        Task<ApiResult> GetOrderByUserId(int userId);
     }
 }

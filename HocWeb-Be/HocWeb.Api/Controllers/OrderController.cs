@@ -37,6 +37,19 @@ namespace HocWeb.Api.Controllers
                 throw new Exception(e.Message);
             }
         }
+        [HttpGet("get-by-user-id")]
+        public async Task<IActionResult> GetByUserId([FromQuery] int userId)
+        {
+            try
+            {
+                var result = await orderService.GetOrderByUserId(userId);
+                return Response(result);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
         [Authorize]
         [HttpPost("add")]
         public async Task<IActionResult> Add([FromBody] Order model)
