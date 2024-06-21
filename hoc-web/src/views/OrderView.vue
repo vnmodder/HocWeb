@@ -60,7 +60,7 @@ const title = ref('Chi tiết đơn hàng');
 const selectedOrder = ref<any>();
 
 const fetchData = async () => {
-  const response = await orderApi.getAllOrder(user.value?.userId);
+  const response = await orderApi.getAllOrder();
   if (response && response.data.result.isSuccess) {
     orders.value = response.data.result.data
   } else {
