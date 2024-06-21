@@ -1,4 +1,5 @@
 ﻿using HocWeb.Infrastructure.Entities;
+using HocWeb.Service.Common.IServices;
 using HocWeb.Service.Models;
 
 namespace HocWeb.Service.Interfaces
@@ -10,6 +11,6 @@ namespace HocWeb.Service.Interfaces
         /// </summary>
         /// <param name="model">The model.</param>
         Task<ApiResult> CreateNew(OrderModel model);
-        Task<ApiResult> GetOrderByUserId(int userId);
+        Task<ApiResult> GetOrderByUserId();
     }
 }

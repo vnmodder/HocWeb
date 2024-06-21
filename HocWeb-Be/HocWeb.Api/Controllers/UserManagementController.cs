@@ -11,11 +11,11 @@ namespace HocWeb.Api.Controllers
     [ApiController]
     public class UserManagementController : BaseController
     {
-        private readonly IUserService _userService;
+        private readonly IUserManagementService _userManagementService;
 
-        public UserManagementController(IUserService userService)
+        public UserManagementController(IUserManagementService userService)
         {
-            _userService = userService;
+            _userManagementService = userService;
         }
 
         [Authorize]
@@ -24,7 +24,7 @@ namespace HocWeb.Api.Controllers
         {
             try
             {
-                var result = await _userService.UpdateInfo(model);
+                var result = await _userManagementService.UpdateInfo(model);
                 return Response(result);
             }
             catch (Exception e)
@@ -38,7 +38,7 @@ namespace HocWeb.Api.Controllers
         {
             try
             {
-                var result = await _userService.ChangePassword(model);
+                var result = await _userManagementService.ChangePassword(model);
                 return Response(result);
             }
             catch (Exception e)

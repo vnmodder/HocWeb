@@ -131,17 +131,17 @@ namespace HocWeb.Service.Services
 
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Secret"]);
 
-            var expires = DateTime.UtcNow.AddDays(7);
+            var expires = DateTime.UtcNow.AddHours(7).AddDays(7);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                    new Claim("user-name", user.UserName?.ToString()),
-                    new Claim("role",role),
+                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.AddHours(7).ToString()),
+                    new Claim(ClaimTypes.Role,role),
                     new Claim(ClaimTypes.NameIdentifier, user.UserName),
                     new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
                 }),
 
                 Expires = expires,

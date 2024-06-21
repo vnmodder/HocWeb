@@ -1,5 +1,6 @@
 ﻿using HocWeb.Infrastructure;
 using HocWeb.Infrastructure.Entities;
+using HocWeb.Service.Common.IServices;
 using HocWeb.Service.Interfaces;
 using HocWeb.Service.Models;
 using HocWeb.Service.Models.User;
@@ -12,14 +13,15 @@ using System.Threading.Tasks;
 
 namespace HocWeb.Service.Services
 {
-    public class UserService : BaseService, IUserService
+    public class UserManagementService : BaseService, IUserManagementService
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
-        public UserService(DataContext dataContext,
+        public UserManagementService(DataContext dataContext,
             UserManager<User> userManager,
-            SignInManager<User> signInManager) : base(dataContext)
+            SignInManager<User> signInManager,
+            IUserService userService) : base(dataContext, userService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -48,7 +50,7 @@ namespace HocWeb.Service.Services
                     return new(result);
 
                 }
-                var err = result.Errors.Select(x=>x.Description);
+                var err = result.Errors.Select(x => x.Description);
                 await tran.RollbackAsync();
                 return new() { Message = string.Join('\n', err) };
             }

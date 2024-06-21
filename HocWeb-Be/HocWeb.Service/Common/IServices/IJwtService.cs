@@ -1,4 +1,4 @@
-﻿namespace HocWeb.Service.Interfaces
+﻿namespace HocWeb.Service.Common.IServices
 {
     public interface IJwtService
     {

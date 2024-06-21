@@ -1,6 +1,7 @@
 ﻿using HocWeb.Infrastructure;
 using HocWeb.Infrastructure.Entities;
 using HocWeb.Infrastructure.Extensions;
+using HocWeb.Service.Common.IServices;
 using HocWeb.Service.Interfaces;
 using HocWeb.Service.Models;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ namespace HocWeb.Service.Services
 {
     public class ProductService : BaseService, IProductService
     {
-        public ProductService(DataContext dataContext) : base(dataContext) { }
+        public ProductService(DataContext dataContext, IUserService userService) : base(dataContext, userService) { }
 
         public async Task<ApiResult> Add(Product model)
         {

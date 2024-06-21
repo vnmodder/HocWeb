@@ -1,4 +1,6 @@
 ﻿using HocWeb.Infrastructure.Entities;
+using HocWeb.Service.Common.IServices;
+using HocWeb.Service.Common.Services;
 using HocWeb.Service.Interfaces;
 using HocWeb.Service.Services;
 using Microsoft.AspNetCore.Identity;
@@ -22,7 +24,10 @@ namespace HocWeb.Service
             // User Management Service.
             services.AddScoped<UserManager<User>>();
             services.AddScoped<SignInManager<User>, SignInManager<User>>();
+            services.AddScoped<IUserService, UserService>();
 
+            // Ftp
+            services.AddScoped<IFtpDirectoryService, FtpDirectoryService>();
             #endregion
 
             #region Business services
@@ -33,7 +38,7 @@ namespace HocWeb.Service
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<ISupplierService, SupplierService>();
             services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserManagementService, UserManagementService>();
             #endregion
             return services;
         }

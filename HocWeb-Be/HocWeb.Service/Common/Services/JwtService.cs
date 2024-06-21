@@ -1,11 +1,11 @@
-﻿using HocWeb.Service.Interfaces;
+﻿using HocWeb.Service.Common.IServices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace HocWeb.Service.Services
+namespace HocWeb.Service.Common.Services
 {
     public class JwtService : IJwtService
     {

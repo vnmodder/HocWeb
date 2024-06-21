@@ -1,4 +1,4 @@
-using HocWeb.Infrastructure;
+﻿using HocWeb.Infrastructure;
 using HocWeb.Service;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
@@ -17,7 +17,7 @@ builder.Services.AddSwaggerGen(options =>
     //var commitMsg = Configuration["LastedCommitMsg"];
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "SQUIRREL 2023 API",
+        Title = "HỌC WEB 2023 API",
         Version = "v1",
         // Description = $"Commit hash: {commitHash} <br /> Commit message: {commitMsg}"
     });

@@ -1,6 +1,7 @@
 ﻿using HocWeb.Infrastructure;
 using HocWeb.Infrastructure.Entities;
 using HocWeb.Infrastructure.Extensions;
+using HocWeb.Service.Common.IServices;
 using HocWeb.Service.Interfaces;
 using HocWeb.Service.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,8 @@ namespace HocWeb.Service.Services
     public class CategoryService : BaseService, ICategoryService
     {
 
-        public CategoryService(DataContext dataContext) : base(dataContext)
+        public CategoryService(DataContext dataContext,
+            IUserService userService) : base(dataContext, userService)
         {
         }
 

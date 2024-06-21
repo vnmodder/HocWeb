@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HocWeb.Service.Interfaces
 {
-    public interface IUserService
+    public interface IUserManagementService
     {
         Task<ApiResult> UpdateInfo(UpdateInfoModel model);
         Task<ApiResult> ChangePassword(ChangePasswordModel model);

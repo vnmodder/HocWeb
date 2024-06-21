@@ -1,6 +1,6 @@
 ﻿using HocWeb.Service.Models;
 
-namespace HocWeb.Service.Interfaces
+namespace HocWeb.Service.Common.IServices
 {
     public interface IServiceBase<TEntity>
     {

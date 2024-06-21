@@ -1,6 +1,7 @@
 ﻿using HocWeb.Infrastructure;
 using HocWeb.Infrastructure.Entities;
 using HocWeb.Infrastructure.Extensions;
+using HocWeb.Service.Common.IServices;
 using HocWeb.Service.Interfaces;
 using HocWeb.Service.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ namespace HocWeb.Service.Services
 {
     public class OrderService : BaseService, IOrderService
     {
-        public OrderService(DataContext context) : base(context) { }
+        public OrderService(DataContext context, IUserService userService) : base(context, userService) { }
 
         public async Task<ApiResult> Add(Order model)
         {
@@ -127,10 +128,10 @@ namespace HocWeb.Service.Services
             return new(result);
         }
 
-        public async Task<ApiResult> GetOrderByUserId(int userId)
+        public async Task<ApiResult> GetOrderByUserId()
         {
             var result = await _dataContext.Orders.Exist()
-               .Where(x => x.CustomerId == userId).ToListAsync();
+               .Where(x => x.CustomerId == _userService.UserId).ToListAsync();
             return new(result);
         }
 

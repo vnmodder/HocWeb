@@ -38,11 +38,11 @@ namespace HocWeb.Api.Controllers
             }
         }
         [HttpGet("get-by-user-id")]
-        public async Task<IActionResult> GetByUserId([FromQuery] int userId)
+        public async Task<IActionResult> GetByUserId()
         {
             try
             {
-                var result = await orderService.GetOrderByUserId(userId);
+                var result = await orderService.GetOrderByUserId();
                 return Response(result);
             }
             catch (Exception e)
