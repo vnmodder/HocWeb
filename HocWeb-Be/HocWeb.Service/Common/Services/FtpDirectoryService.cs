@@ -18,7 +18,12 @@ namespace HocWeb.Service.Common.Services
         {
             try
             {
-                string remoteFilePath = $"{_ftpDirectory}{outputDirectory}{outputFileName}";
+                string remoteFilePath = $"{_ftpDirectory}{outputDirectory}/{outputFileName}";
+
+                if(!Directory.Exists($"{_ftpDirectory}{outputDirectory}"))
+                {
+                    Directory.CreateDirectory($"{_ftpDirectory}{outputDirectory}");
+                }
 
                 fileStream.Seek(0, SeekOrigin.Begin);
 

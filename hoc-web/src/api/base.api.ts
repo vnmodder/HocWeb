@@ -9,16 +9,16 @@ const apiClient = axios.create({
   },
 });
 
-// Hàm để lấy token JWT từ localStorage
 function getToken() {
   return Cookies.get('token');
 }
 
 export default {
-  get: async ( endpoint: string): Promise<AxiosResponse> => {
+  get: async (endpoint: string, params?: Record<string, any>): Promise<AxiosResponse> => {
     const token = getToken();
-     return await apiClient.get(`${endpoint}`, {
+    return await apiClient.get(endpoint, {
       headers: { Authorization: `Bearer ${token}` },
+      params, 
     });
   },
 
@@ -26,6 +26,16 @@ export default {
     const token =  getToken();
     return await apiClient.post(`${endpoint}`, body, {
       headers: { Authorization: `Bearer ${token}` },
+    });
+  },
+
+  postForm: async (endpoint: string, formData: FormData): Promise<AxiosResponse> => {
+    const token = getToken();
+    return await apiClient.post(endpoint, formData, {
+      headers: { 
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      },
     });
   },
 
