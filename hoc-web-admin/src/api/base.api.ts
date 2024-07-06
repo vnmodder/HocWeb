@@ -9,6 +9,13 @@ const apiClient = axios.create({
   },
 });
 
+const apiFile= axios.create({
+  baseURL: import.meta.env.VITE_BASE_FILE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 function getToken() {
   return Cookies.get('token');
 }
@@ -19,6 +26,20 @@ export default {
     return await apiClient.get(endpoint, {
       headers: { Authorization: `Bearer ${token}` },
       params, 
+    });
+  },
+
+  getPublicFile: async (endpoint: string): Promise<AxiosResponse> => {
+    return await apiFile.get('public/' + encodeURIComponent(endpoint),{
+      responseType: 'blob',
+    });
+  },
+
+  getFile: async (endpoint: string): Promise<AxiosResponse> => {
+    const token = getToken();
+    return await apiFile.get(encodeURIComponent(endpoint),{
+      headers: { Authorization: `Bearer ${token}` },
+      responseType: 'blob',
     });
   },
 

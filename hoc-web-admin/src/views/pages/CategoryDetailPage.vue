@@ -31,21 +31,33 @@
           <label for="formFile" class="form-label"
             >Ảnh hiện thị cho danh mục</label
           >
-          <input class="form-control" type="file" id="formFile" />
+          <input
+            class="form-control"
+            type="file"
+            id="formFile"
+            @change="handleFileUpload"
+          />
         </div>
         <div class="row mt-3" v-if="props.mode != 'create'">
           <label for="cateName" class="col-sm-2 col-form-label"
             >Tình trạng</label
           >
           <div class="col-sm-10">
-            <select class="form-select" v-model="selected.status" aria-label="Default select example">
+            <select
+              class="form-select"
+              v-model="selected.status"
+              aria-label="Default select example"
+            >
               <option value="1">Đang hiển thị</option>
               <option value="2">Không hiển thị</option>
             </select>
           </div>
         </div>
       </div>
-      <div class="col-sm-4 border border-white">Xem trước</div>
+      <div class="col-sm-4 border border-white">
+        <span v-if="!previewUrl">Xem trước</span>
+        <img v-else :src="previewUrl" class="img-fluid"/>
+      </div>
     </div>
     <div class="row d-flex justify-content-center mt-4">
       <ButtonComponent
@@ -67,11 +79,14 @@ const selected = ref({
   id: undefined,
   nameVN: "",
   image: "",
-  status: '1',
+  status: "1",
   updatedDate: "",
   createdDate: "",
   deleteDate: "",
 });
+
+const file = ref<File>();
+const previewUrl = ref<any>(null);
 
 interface Props {
   mode?: string;
@@ -82,9 +97,33 @@ const model = defineModel<any>();
 
 const props = defineProps<Props>();
 
-const onSave = () => {
+const onSave = async () => {
   if (props.onClose) {
-    props?.onClose();
+    if (props.mode == "create") {
+      if(!selected.value?.nameVN){
+        return
+      }
+      const formData = new FormData();
+      formData.append("nameVN", selected.value.nameVN);
+      formData.append("name", selected.value.nameVN);
+      formData.append("file", file.value);
+
+      const response = await cateApi.AddNewCategory(formData);
+      if (response && response.data.result.isSuccess) {
+        props.onClose();
+        return;
+      }
+
+      alert(response.data.result.message ?? "Lỗi");
+    }
+  }
+};
+
+const handleFileUpload = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    file.value = input.files[0];
+    previewUrl.value = URL.createObjectURL(file.value);
   }
 };
 
@@ -101,9 +140,16 @@ const loadInt = async () => {
     selected.value.updatedDate = data.updatedDate;
     selected.value.createdDate = data.createdDate;
     selected.value.deleteDate = data.deleteDate;
-    selected.value.status = data.deleteDate == undefined?'1':'2';
+    selected.value.status = data.deleteDate == undefined ? "1" : "2";
   } else {
     alert(response.data.result.message);
+  }
+  
+  if(props.mode != "create" && selected.value.image){
+    const response2 = await cateApi.getImage(selected.value.image);
+    if(response2 && response2.data){
+      previewUrl.value = URL.createObjectURL(response2.data)
+    }
   }
 };
 

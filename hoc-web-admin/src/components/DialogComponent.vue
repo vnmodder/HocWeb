@@ -39,14 +39,16 @@ import { defineProps } from "vue";
 
 interface Props {
   title?: string;
+  onDialogClose?: () => void
 }
 
-withDefaults(defineProps<Props>(), {
-  title: "Dialog",
-});
+const props = defineProps<Props>();
 const model = defineModel();
 
 const close = () => {
   model.value = false;
+  if(props.onDialogClose){
+    props.onDialogClose()
+  }
 };
 </script>

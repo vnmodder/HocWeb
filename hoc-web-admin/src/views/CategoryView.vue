@@ -65,6 +65,7 @@
     :modelValue="isAddOpen"
     title="Thêm danh mục"
     @update:modelValue="isAddOpen = $event"
+    @onDialogClose = "addDialogClose"
   >
   <template v-slot="{ onClose}">
     <CategoryDetailPage  :on-close="onClose" :mode="'create'" />
@@ -100,6 +101,10 @@ const isUpdateOpen = ref(false);
 
 const onAdd = () => {
   isAddOpen.value = true;
+};
+
+const addDialogClose = async () => {
+  await loadCategories();
 };
 
 const onUpdate = () => {
