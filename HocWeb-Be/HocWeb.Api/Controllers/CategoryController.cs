@@ -1,5 +1,6 @@
 ﻿using HocWeb.Infrastructure.Entities;
 using HocWeb.Service.Interfaces;
+using HocWeb.Service.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,7 +41,7 @@ namespace HocWeb.Api.Controllers
 
         [Authorize]
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromBody] Category model)
+        public async Task<IActionResult> Add([FromForm] AddCategoryModel model)
         {
             try
             {
