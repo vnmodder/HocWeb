@@ -15,8 +15,8 @@
               Dropdown
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li v-for="item in categories" :key="item.id">
-                <a class="dropdown-item" href="/product?categoryId=" + item.id>{{ item.nameVN }}</a>
+              <li>
+                <a class="dropdown-item" v-for="item in categories" href="">{{ item.nameVN }}</a>
               </li>
             </ul>
           </li>
@@ -35,7 +35,34 @@
               0
             </span>
           </div>
-          <a href="/login"><button class="btn btn-primary">Đăng Nhập</button></a>
+          <ul class="navbar-nav">
+            <li v-if="!user" class="nav-item">
+              <a href="/login"><button class="btn btn-primary">Đăng Nhập</button></a>
+            </li>
+            <li v-else class="nav-item dropdown">
+              <a
+              class="nav-link dropdown-toggle"
+              id="navbarDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              >Chào bạn <strong>{{ user?.fullname }}</strong></a
+              >
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="/user-info">Thông tin</a></li>
+              <li>
+                <a class="dropdown-item" href="/order"
+                  >Lịch sử đặt hàng</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" @click="logout" href="/"
+                  >Đăng xuất</a
+                >
+              </li>
+            </ul>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -43,29 +70,31 @@
 </template>
 
 <script setup lang='ts'>
-    import axios from 'axios';
 import { ref } from 'vue';
-    const apiClient = axios.create({
-        baseURL: 'http://localhost:5152/api/',
-        headers: {
-            'Content-Type' : 'application/json',
-        },
-    });
+import homeApi from '@/api/home.api';
+import { storeToRefs } from 'pinia';
+import { userStore } from '@/stores/auth';
+import Cookies from 'js-cookie';
+import router from '@/router';
 
-    const getAllCategory = async ()=> {
-        return await apiClient.get(`Category/get-all`, {
-        headers : { Authorization : `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhNDdhMWVmMC0wZGVmLTQzMDQtYTA4MS00Mjg0YzA2MWNkMGYiLCJpYXQiOjE3MjA2MjAxOTIsInJvbGUiOiJVc2VyLEFkbWluIiwibmFtZWlkIjoiYWRtaW4iLCJlbWFpbCI6ImFudGVzdG1haWxAZ21haWwuY29tIiwidW5pcXVlX25hbWUiOiIxIiwibmJmIjoxNzIwNjIwMTkyLCJleHAiOjE3MjEyNTAxOTIsImlzcyI6IkhvY1dlYklzc3VlciIsImF1ZCI6IkhvY1dlYkF1ZGllbmNlIn0._EyIyuLou-YWFBnRoW-8rDmiOPIeBTtHQqZhZKYFX7E` },    
-        });
-    } 
-    const test =async()=>{
-        const result = await getAllCategory();
-        if(result.status == 200){
-            console.log(result.data.result.data)
-            categories.value = result.data.result.data
-        }
-    }
+const categories = ref<any>([]);
+const authStore = userStore();
+const {user} = storeToRefs(authStore);//hoi thay thang nay nua
 
-    const categories = ref<Array<any>>([])
-      test();
-
+const fetchData = async () => {
+  const response = await homeApi.getAllCategory();
+  // console.log(response);
+  if(response && response.data.result.isSuccess){
+    categories.value = response.data.result.data;
+  }
+  else{
+    alert(response?.data.result.message ?? "Lỗi");
+  }
+}
+const logout = async () =>{
+  Cookies.remove("token");
+  authStore.logout();
+}
+console.log(user);
+fetchData();
 </script>
