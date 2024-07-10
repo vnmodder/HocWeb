@@ -1,6 +1,7 @@
 ﻿using HocWeb.Infrastructure.Entities;
 using HocWeb.Service.Common.IServices;
 using HocWeb.Service.Models;
+using HocWeb.Service.Models.Order;
 
 namespace HocWeb.Service.Interfaces
 {

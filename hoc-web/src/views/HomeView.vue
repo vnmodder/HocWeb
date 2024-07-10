@@ -18,7 +18,7 @@
         <div v-for="(item, index) in categories" :key="index" class="col mb-5">
           <a class="nav-link" :href="'/product?categoryId=' + item.id">
             <div class="card h-100">
-              <img class="card-img-top" :src="item.image" alt="..." />
+              <img class="card-img-top" :src=" rootFile +item.image" alt="..." />
               <div class="card-body p-4">
                 <div class="text-center">
                   <h5 class="fw-bolder">{{ item.nameVN }}</h5>
@@ -105,6 +105,7 @@ import { ref } from "vue";
 import { useCartStore } from "@/stores/cart";
 import { storeToRefs } from "pinia";
 import { userStore } from "../stores/auth";
+import {rootFile} from '@/components/contants'
 
 const authStore = userStore();
 const { user } = storeToRefs(authStore);
