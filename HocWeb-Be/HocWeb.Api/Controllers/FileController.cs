@@ -1,6 +1,7 @@
 ﻿using HocWeb.Service.Common.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace HocWeb.Api.Controllers
 {
@@ -13,17 +14,18 @@ namespace HocWeb.Api.Controllers
             _ftpDirectoryService = ftpDirectoryService;
         }
 
-        [HttpGet("pulic/{*filePath}")]
+        [HttpGet("public/{*filePath}")]
         public async Task<IActionResult> GetPublicFile(string filePath)
         {
-            var result = _ftpDirectoryService.GetFileStream($"public/{filePath}");
+            var deCodeFIlePath = WebUtility.UrlDecode(filePath);
+            var result = _ftpDirectoryService.GetFileStream($"public/{deCodeFIlePath}");
             if(result.Succeed)
             {
                 var fileStream = result.FileStream;
                 fileStream.Position = 0; 
 
                 var contentType = "application/octet-stream";
-                var fileName = Path.GetFileName(filePath);
+                var fileName = Path.GetFileName(deCodeFIlePath);
                 return File(fileStream, contentType, fileName);
             }
 
@@ -35,14 +37,15 @@ namespace HocWeb.Api.Controllers
 
         public async Task<IActionResult> GetFile(string filePath)
         {
-            var result = _ftpDirectoryService.GetFileStream($"{filePath}");
+            var deCodeFIlePath = WebUtility.UrlDecode(filePath);
+            var result = _ftpDirectoryService.GetFileStream($"{deCodeFIlePath}");
             if (result.Succeed)
             {
                 var fileStream = result.FileStream;
                 fileStream.Position = 0;
 
                 var contentType = "application/octet-stream";
-                var fileName = Path.GetFileName(filePath);
+                var fileName = Path.GetFileName(deCodeFIlePath);
                 return File(fileStream, contentType, fileName);
             }
 
