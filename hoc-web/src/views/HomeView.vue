@@ -18,7 +18,7 @@
         <div v-for="(item, index) in categories" :key="index" class="col mb-5">
           <a class="nav-link" :href="'/product?categoryId=' + item.id">
             <div class="card h-100">
-              <img class="card-img-top" :src=" rootFile +item.image" alt="..." />
+              <img class="card-img-top" :src="item.imgPath" alt="..." />
               <div class="card-body p-4">
                 <div class="text-center">
                   <h5 class="fw-bolder">{{ item.nameVN }}</h5>
@@ -30,7 +30,7 @@
       </div>
     </div>
   </section>
-  <section >
+  <section>
     <h2 class="fw-bolder mb-4 text-center">Các tài khoản hot</h2>
     <div class="container px-4 px-lg-5 mt-2">
       <div
@@ -100,23 +100,22 @@
 </template>
 
 <script setup lang="ts">
-import homeApi from "@/api/home.api";
-import { ref } from "vue";
-import { useCartStore } from "@/stores/cart";
-import { storeToRefs } from "pinia";
-import { userStore } from "../stores/auth";
-import {rootFile} from '@/components/contants'
+import homeApi from "@/api/home.api"
+import { ref } from "vue"
+import { useCartStore } from "@/stores/cart"
+import { storeToRefs } from "pinia"
+import { userStore } from "../stores/auth"
+import { getImage } from "@/components/helper"
+const authStore = userStore()
+const { user } = storeToRefs(authStore)
 
-const authStore = userStore();
-const { user } = storeToRefs(authStore);
-
-const products = ref<any>([]);
-const categories = ref<any>([]);
+const products = ref<any>([])
+const categories = ref<any>([])
 
 const addToCart = (item: any) => {
   if (!user.value) {
-    alert("Hãy đăng nhập để thực hiện chức năng này");
-    return;
+    alert("Hãy đăng nhập để thực hiện chức năng này")
+    return
   }
 
   const product = {
@@ -124,27 +123,32 @@ const addToCart = (item: any) => {
     name: item.name,
     unitPrice: item.unitPrice,
     quantity: 1,
-  };
-  useCartStore().addToCart(product);
-};
+  }
+  useCartStore().addToCart(product)
+}
 
 const fetchData = async () => {
-  const response = await homeApi.getAllProduct();
+  const response = await homeApi.getAllProduct()
   if (response && response.data.result.isSuccess) {
-    products.value = response.data.result.data;
+    products.value = response.data.result.data
   } else {
-    products.value = [];
-    alert(response?.data.result.message ?? "Lỗi");
+    products.value = []
+    alert(response?.data.result.message ?? "Lỗi")
   }
 
-  const response2 = await homeApi.getAllCategory();
+  const response2 = await homeApi.getAllCategory()
   if (response2 && response2.data.result.isSuccess) {
-    categories.value = response2.data.result.data;
+    const promises = response2.data.result.data.map(async (x: any) => {
+      return { ...x, imgPath: await getImage(x.image) }
+    })
+    categories.value = await Promise.all(promises)
   } else {
-    categories.value = [];
-    alert(response2?.data.result.message ?? "Lỗi");
+    categories.value = []
+    alert(response2?.data.result.message ?? "Lỗi")
   }
-};
+}
 
-fetchData();
+fetchData()
+
+console.log(categories.value)
 </script>
