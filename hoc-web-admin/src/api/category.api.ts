@@ -13,7 +13,7 @@ export default {
     UpdateCategory: async (data: FormData) => {
       return await baseApi.postForm('Category/update',data);
     },
-    // getImage: async (img: string) => {
-    //   return await baseApi.getPublicFile(img);
-    // },
+    getImage: async (img: string) => {
+      return await baseApi.getPublicFile(img);
+    },
 };

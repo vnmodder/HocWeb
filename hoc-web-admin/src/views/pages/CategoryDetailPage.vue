@@ -74,7 +74,7 @@ import { ref } from "vue";
 import GroupItem from "@/components/GroupItem.vue";
 import ButtonComponent from "@/components/ButtonComponent.vue";
 import cateApi from "@/api/category.api";
-import {rootFile} from '@/components/contants'
+import { getImage } from "@/components/helper";
 
 const selected = ref({
   id: undefined,
@@ -172,7 +172,7 @@ const loadInt = async () => {
   }
 
   if (props.mode != "create" && selected.value.image) {
-      previewUrl.value = rootFile + selected.value.image
+    previewUrl.value = await getImage(selected.value.image);
   }
 };
 

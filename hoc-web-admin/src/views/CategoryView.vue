@@ -33,7 +33,8 @@
         :onClick="onAdd"
         class-name="col-sm-1"
       />
-      <ButtonComponent :disabled="updateStatus" text="Sửa" :on-click="onUpdate" class-name="ms-2 col-sm-1" />
+      <ButtonComponent :disabled="updateStatus" text="Sửa" 
+      :on-click="onUpdate" class-name="ms-2 col-sm-1" />
     </div>
   </GroupItem>
   <GroupItem title="Danh sách danh mục hiện có">
