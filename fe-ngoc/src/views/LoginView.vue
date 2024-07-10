@@ -28,34 +28,40 @@
 <script setup lang = "ts">
 import auth from '@/api/authenticate.api'
 import { ref } from 'vue';
-import Cookies from 'js-cookie'
-import {useRouter} from 'vue-router'
+import Cookies from 'js-cookie';
+import router from '@/router';
+import {userStore} from "../stores/auth"
 
-const userName = ref('');
-const password = ref('');
-const router = useRouter();
+const userName = ref<any>("");
+const password = ref<any>("");
+const user = userStore(); // hoi thay thang nay.
 
-const handleLogin = async ()=> {
+const handleLogin = async () => {
   if(userName.value && password.value){
-    const loginModel = {
-      userName : userName.value,
-      password : password.value,
+    const LoginModel = {
+      userName: userName.value,
+      password: password.value,
     }
-    const response = await auth.login(loginModel);
+    
+    const response = await auth.login(LoginModel);
     console.log(response);
     if(response && response.result?.isSuccess){
-      console.log(response);
+      user.login({
+        userId: response.result.data.userId,
+        userName: response.result.data.userName,
+        email: response.result.data.email,
+        fullname: response.result.data.fullname,
+      })
       Cookies.set("token", response.result.data.token);
-      router.push('/');
+      router.push("/");
     }
     else{
-      alert("Sai Tài Khoản hoặc mật khẩu");
+      alert("Sai tài khoản hoặc mật khẩu!");
     }
   }
   else{
-    alert("Vui lòng nhập đủ!");
+    alert("Vui lòng nhập đầy đủ thông tin!");
   }
-  
-};
+}
 
 </script>
