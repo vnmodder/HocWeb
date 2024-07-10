@@ -1,7 +1,7 @@
 <template>
   <aside id="sidebar" class="js-sidebar" :class="showItems ? 'collapsed' : ''">
     <div class="h-100">
-      <div class="sidebar-logo  border-bottom">
+      <div class="sidebar-logo">
         <a href="/">
           <img src="@/assets/hw.png" class="avatar" alt=""
         />Học web admin</a>

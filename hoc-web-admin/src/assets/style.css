@@ -37,7 +37,7 @@ h4 {
 #sidebar {
     max-width: 264px;
     min-width: 264px;
-    background: var(--bs-dark);
+    background: var(--bs-card-cap-bg);
     transition: all 0.35s ease-in-out;
 }
 
@@ -56,10 +56,12 @@ h4 {
 
 .sidebar-logo {
     padding: 1rem;
+    border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-highlight-color) !important;
+
 }
 
 .sidebar-logo a {
-    color: #e9ecef;
+    color: var(--bs-card-title-color);
     font-size: 1.15rem;
     font-weight: 600;
 }
@@ -72,14 +74,14 @@ h4 {
 }
 
 .sidebar-header {
-    color: #e9ecef;
+    color: var(--bs-card-title-color);
     font-size: .75rem;
     padding: 1.5rem 1.5rem .375rem;
 }
 
 a.sidebar-link {
     padding: .625rem 1.625rem;
-    color: #e9ecef;
+    color: var(--bs-card-title-color);
     position: relative;
     display: block;
     font-size: 1rem;
@@ -106,6 +108,10 @@ a.sidebar-link {
 .avatar {
     height: 40px;
     width: 40px;
+}
+
+#navbar{
+    border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-highlight-color) !important;
 }
 
 .navbar-expand .navbar-nav {

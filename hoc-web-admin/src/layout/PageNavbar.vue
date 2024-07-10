@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand px-3 border-bottom">
+  <nav class="navbar navbar-expand px-3 border-bottom" id="navbar">
     <button class="btn" id="sidebar-toggle" type="button">
       <span class="navbar-toggler-icon" @click="menuToggleClick"></span>
     </button>
