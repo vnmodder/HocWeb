@@ -1,6 +1,6 @@
 ﻿using HocWeb.Infrastructure.Entities;
 using HocWeb.Service.Interfaces;
-using HocWeb.Service.Models;
+using HocWeb.Service.Models.Category;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +22,13 @@ namespace HocWeb.Api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var result = await _categoryService.GetAll();
+            return Response(result);
+        }
+
+        [HttpGet("get-all-2")]
+        public async Task<IActionResult> GetAll2()
+        {
+            var result = await _categoryService.GetAll2();
             return Response(result);
         }
 
@@ -70,8 +77,8 @@ namespace HocWeb.Api.Controllers
         }
 
         [Authorize]
-        [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] Category model)
+        [HttpPost("update")]
+        public async Task<IActionResult> Update([FromForm] UpdateCategoryModel model)
         {
             try
             {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace HocWeb.Service.Models
+namespace HocWeb.Service.Models.Category
 {
     public class AddCategoryModel
     {

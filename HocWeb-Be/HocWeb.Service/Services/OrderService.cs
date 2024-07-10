@@ -4,6 +4,7 @@ using HocWeb.Infrastructure.Extensions;
 using HocWeb.Service.Common.IServices;
 using HocWeb.Service.Interfaces;
 using HocWeb.Service.Models;
+using HocWeb.Service.Models.Order;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
