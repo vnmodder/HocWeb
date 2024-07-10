@@ -35,20 +35,17 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
+import { defineProps,defineEmits } from "vue";
 
 interface Props {
   title?: string;
-  onDialogClose?: () => void
 }
-
+const emits = defineEmits(['onDialogClose']);
 const props = defineProps<Props>();
 const model = defineModel();
 
 const close = () => {
   model.value = false;
-  if(props.onDialogClose){
-    props.onDialogClose()
-  }
+  emits('onDialogClose');
 };
 </script>

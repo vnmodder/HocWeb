@@ -65,7 +65,7 @@
     :modelValue="isAddOpen"
     title="Thêm danh mục"
     @update:modelValue="isAddOpen = $event"
-    @onDialogClose = "addDialogClose"
+    @onDialogClose = "onDialogClose"
   >
   <template v-slot="{ onClose}">
     <CategoryDetailPage  :on-close="onClose" :mode="'create'" />
@@ -76,6 +76,7 @@
     :modelValue="isUpdateOpen"
     title="Cập nhật danh mục"
     @update:modelValue="isUpdateOpen = $event"
+    @onDialogClose = "onDialogClose"
   >
   <template v-slot="{ onClose}">
     <CategoryDetailPage  :on-close="onClose" v-model="selected"/>
@@ -103,7 +104,7 @@ const onAdd = () => {
   isAddOpen.value = true;
 };
 
-const addDialogClose = async () => {
+const onDialogClose = async () => {
   await loadCategories();
 };
 
@@ -121,7 +122,7 @@ const rowClick = (item: any) => {
 const loadCategories = async () => {
   const response = await cateApi.getAllCategory();
   if (response && response.data.result.isSuccess) {
-    categories.value = response.data.result.data;
+    categories.value = response.data.result.data
   } else {
     categories.value = [];
     alert(response.data.result.message);

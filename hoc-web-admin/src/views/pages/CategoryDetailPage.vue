@@ -56,7 +56,7 @@
       </div>
       <div class="col-sm-4 border border-white">
         <span v-if="!previewUrl">Xem trước</span>
-        <img v-else :src="previewUrl" class="img-fluid"/>
+        <img v-else :src="previewUrl" class="img-fluid" />
       </div>
     </div>
     <div class="row d-flex justify-content-center mt-4">
@@ -74,6 +74,7 @@ import { ref } from "vue";
 import GroupItem from "@/components/GroupItem.vue";
 import ButtonComponent from "@/components/ButtonComponent.vue";
 import cateApi from "@/api/category.api";
+import {rootFile} from '@/components/contants'
 
 const selected = ref({
   id: undefined,
@@ -100,15 +101,40 @@ const props = defineProps<Props>();
 const onSave = async () => {
   if (props.onClose) {
     if (props.mode == "create") {
-      if(!selected.value?.nameVN){
-        return
+      if (!selected.value?.nameVN) {
+        alert("Vui lòng điền tên danh mục");
+        return;
       }
       const formData = new FormData();
       formData.append("nameVN", selected.value.nameVN);
       formData.append("name", selected.value.nameVN);
-      formData.append("file", file.value);
+      if (file.value) {
+        formData.append("file", file.value);
+      }
 
       const response = await cateApi.AddNewCategory(formData);
+      if (response && response.data.result.isSuccess) {
+        props.onClose();
+        return;
+      }
+
+      alert(response.data.result.message ?? "Lỗi");
+    } else {
+      const formData = new FormData();
+      if (selected.value.id) {
+        formData.append("id", selected.value.id);
+      }
+      const status = selected.value?.status == "2";
+      formData.append("isDelete", status.toString());
+      if (selected.value.nameVN) {
+        formData.append("nameVN", selected.value.nameVN);
+        formData.append("name", selected.value.nameVN);
+      }
+      if (file.value) {
+        formData.append("file", file.value);
+      }
+
+      const response = await cateApi.UpdateCategory(formData);
       if (response && response.data.result.isSuccess) {
         props.onClose();
         return;
@@ -144,12 +170,9 @@ const loadInt = async () => {
   } else {
     alert(response.data.result.message);
   }
-  
-  if(props.mode != "create" && selected.value.image){
-    const response2 = await cateApi.getImage(selected.value.image);
-    if(response2 && response2.data){
-      previewUrl.value = URL.createObjectURL(response2.data)
-    }
+
+  if (props.mode != "create" && selected.value.image) {
+      previewUrl.value = rootFile + selected.value.image
   }
 };
 

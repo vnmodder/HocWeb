@@ -10,7 +10,8 @@
             <img src="@/assets/hw.png" class="avatar" alt="" />
           </a>
           <div class="dropdown-menu dropdown-menu-end">
-            <a href="#" class="dropdown-item">Đăng xuất</a>
+            <a v-if="user" href="/login" @click="logout" class="dropdown-item">Đăng xuất</a>
+            <a v-else href="/login"  class="dropdown-item">Đăng Nhập</a>
           </div>
         </li>
       </ul>
@@ -20,6 +21,17 @@
 
 <script setup lang="ts">
 import { defineProps } from "vue";
+import { userStore } from "../stores/auth";
+import Cookies from "js-cookie";
+import { storeToRefs } from "pinia";
+
+const authStore = userStore();
+const { user } = storeToRefs(authStore);
+
+const logout = ()=>{
+  Cookies.remove("token");
+  authStore.logout();
+}
 
 interface Props {
   menuToggleClick?: () => void;
