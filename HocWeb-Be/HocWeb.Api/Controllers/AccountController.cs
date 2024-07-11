@@ -1,8 +1,10 @@
 ﻿using HocWeb.Infrastructure.Entities;
 using HocWeb.Service.Interfaces;
-using Microsoft.AspNetCore.Authorization;
+using HocWeb.Service.Models;
+using HocWeb.Service.Models.Authenticate;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace HocWeb.Api.Controllers
@@ -15,113 +17,74 @@ namespace HocWeb.Api.Controllers
 
         public AccountController(IAccountService accountService)
         {
-            _accountService = accountService;
+            _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
         }
 
-        [HttpGet("get-all")]
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterModel model)
+        {
+            var result = await _accountService.AddUser(model);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(int id, User user)
+        {
+            if (id != user.Id)
+            {
+                return BadRequest(new ApiResult { Message = "ID của người dùng không khớp." });
+            }
+
+            var result = await _accountService.UpdateUser(user);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _accountService.DeleteUser(id);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("get/{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var result = await _accountService.GetById(id);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return NotFound(result);
+        }
+
+        [HttpGet("getall")]
         public async Task<IActionResult> GetAll()
         {
-            try
+            var result = await _accountService.GetAll();
+            return Ok(result);
+        }
+
+        [HttpPost("assignroles/{userId}")]
+        public async Task<IActionResult> AssignRoles(int userId, List<string> roleNames)
+        {
+            var result = await _accountService.AssignRoles(userId, roleNames);
+            if (result.IsSuccess)
             {
-                var result = await _accountService.GetAllAccounts();
                 return Ok(result);
             }
-            catch (Exception e)
-            {
-                return StatusCode(500, new { message = $"Lỗi khi lấy danh sách tài khoản: {e.Message}" });
-            }
-        }
-
-        [HttpGet("get-by-id")]
-        public async Task<IActionResult> GetById([FromQuery] int id)
-        {
-            try
-            {
-                var result = await _accountService.GetAccountById(id);
-                if (result.Data != null)
-                {
-                    return Ok(result);
-                }
-                else
-                {
-                    return NotFound(result);
-                }
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, new { message = $"Lỗi khi lấy thông tin tài khoản: {e.Message}" });
-            }
-        }
-
-        [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] Account account)
-        {
-            try
-            {
-                var result = await _accountService.CreateAccount(account, new List<string>());
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, new { message = $"Lỗi khi tạo tài khoản: {e.Message}" });
-            }
-        }
-
-        [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] Account account)
-        {
-            try
-            {
-                var result = await _accountService.UpdateAccount(account.Id, account, new List<string>());
-                if (result.Data != null)
-                {
-                    return Ok(result);
-                }
-                else
-                {
-                    return NotFound(result);
-                }
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, new { message = $"Lỗi khi cập nhật tài khoản: {e.Message}" });
-            }
-        }
-
-        [HttpDelete("delete")]
-        public async Task<IActionResult> Delete([FromQuery] int id)
-        {
-            try
-            {
-                var result = await _accountService.DeleteAccount(id, new List<string>());
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, new { message = $"Lỗi khi xóa tài khoản: {e.Message}" });
-            }
-        }
-
-        [Authorize]
-        [HttpGet("check-access")]
-        public async Task<IActionResult> CheckAccess([FromQuery] int accountId)
-        {
-            try
-            {
-                var result = await _accountService.CheckAccess(accountId, new List<string>());
-                if (result.Data is bool isAdmin && isAdmin)
-                {
-                    return Ok(new { message = "Bạn có quyền truy cập." });
-                }
-                else
-                {
-                    return Forbid();
-                }
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, new { message = $"Lỗi khi kiểm tra quyền truy cập: {e.Message}" });
-            }
+            return BadRequest(result);
         }
     }
 }

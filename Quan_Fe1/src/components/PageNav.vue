@@ -38,7 +38,7 @@
           </ul>
         </li>
       </ul>
-      <form class="d-flex" style="margin-right: 30px">
+      <form class="d-flex" style="margin-right: 30px" v-if="user">
         <a class="btn btn-outline-secondary" href="/cartview">Giỏ hàng</a>
       </form>
       <form class="d-flex" style="margin-right: 100px">

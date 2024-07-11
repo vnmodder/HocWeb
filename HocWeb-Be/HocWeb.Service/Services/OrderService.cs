@@ -12,7 +12,7 @@ namespace HocWeb.Service.Services
 {
     public class OrderService : BaseService, IOrderService
     {
-        public OrderService(DataContext context, IUserService userService) : base(context, userService) { }
+        public OrderService(DataContext context, Common.IServices.IUserService userService) : base(context, userService) { }
 
         public async Task<ApiResult> Add(Order model)
         {

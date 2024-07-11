@@ -1,17 +1,17 @@
 ﻿using HocWeb.Infrastructure.Entities;
+using HocWeb.Service.Common.IServices;
 using HocWeb.Service.Models;
+using HocWeb.Service.Models.Authenticate;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace HocWeb.Service.Interfaces
 {
-    public interface IAccountService
+    public interface IAccountService : IServiceBase<User>
     {
-        Task<ApiResult> GetAllAccounts();
-        Task<ApiResult> GetAccountById(int accountId);
-        Task<ApiResult> CreateAccount(Account account, List<string> roles);
-        Task<ApiResult> UpdateAccount(int accountId, Account account, List<string> roles);
-        Task<ApiResult> DeleteAccount(int accountId, List<string> roles);
-        Task<ApiResult> CheckAccess(int accountId, List<string> roles);
+        Task<ApiResult> AddUser(RegisterModel model);
+        Task<ApiResult> DeleteUser(int userId);
+        Task<ApiResult> UpdateUser(User user);
+        Task<ApiResult> AssignRoles(int userId, List<string> roleNames);
     }
 }

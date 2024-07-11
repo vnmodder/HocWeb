@@ -1,159 +1,245 @@
-﻿using HocWeb.Infrastructure;
-using HocWeb.Infrastructure.Constants;
+﻿using HocWeb.Infrastructure.Constants;
 using HocWeb.Infrastructure.Entities;
 using HocWeb.Service.Common.IServices;
 using HocWeb.Service.Interfaces;
 using HocWeb.Service.Models;
+using HocWeb.Service.Models.Authenticate;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HocWeb.Service.Services
 {
-    public class AccountService : BaseService, IAccountService
+    public class AccountService : IAccountService
     {
-        private readonly UserManager<Account> _userManager;
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
 
-        public AccountService(DataContext dataContext, IUserService userService, UserManager<Account> userManager)
-            : base(dataContext, userService)
+        public AccountService(UserManager<User> userManager, RoleManager<IdentityRole<int>> roleManager)
         {
             _userManager = userManager;
-        }   
-        public async Task<ApiResult> GetAllAccounts()
-        {
-            try
-            {
-                var accounts = await _dataContext.Accounts.ToListAsync();
-                return new ApiResult(accounts);
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Lỗi: {e.Message}");
-            }
+            _roleManager = roleManager;
         }
 
-        public async Task<ApiResult> GetAccountById(int accountId)
+        public async Task<ApiResult> AssignRoles(int userId, List<string> roleNames)
         {
             try
             {
-                var account = await _dataContext.Accounts.FirstOrDefaultAsync(a => a.Id == accountId);
-                if (account != null)
+                var user = await _userManager.FindByIdAsync(userId.ToString());
+                if (user == null)
                 {
-                    return new ApiResult(account);
+                    return new ApiResult { Message = $"Không tìm thấy người dùng với ID {userId}." };
+                }
+
+                var rolesToAdd = new List<string>();
+
+                foreach (var roleName in roleNames)
+                {
+                    var normalizedRoleName = roleName.ToUpper();
+                    if (!await _roleManager.RoleExistsAsync(normalizedRoleName))
+                    {
+                        return new ApiResult { Message = $"Vai trò '{roleName}' không tồn tại." };
+                    }
+
+                    if (!await _userManager.IsInRoleAsync(user, normalizedRoleName))
+                    {
+                        rolesToAdd.Add(normalizedRoleName);
+                    }
+                }
+
+                if (rolesToAdd.Any())
+                {
+                    var addResult = await _userManager.AddToRolesAsync(user, rolesToAdd);
+                    if (addResult.Succeeded)
+                    {
+                        return new ApiResult();
+                    }
+                    else
+                    {
+                        return new ApiResult { Message = string.Join(", ", addResult.Errors.Select(e => e.Description)) };
+                    }
                 }
                 else
                 {
-                    return new ApiResult { Message = "Không tìm thấy tài khoản" };
+                    return new ApiResult { Message = "Người dùng đã có tất cả các vai trò được chỉ định." };
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw new Exception($"Lỗi khi lấy thông tin tài khoản: {e.Message}");
+                return new ApiResult { Message = ex.Message };
             }
         }
 
-        public async Task<ApiResult> CreateAccount(Account account, List<string> roles)
+        public async Task<ApiResult> GetAll()
         {
-            using var tran = await _dataContext.Database.BeginTransactionAsync();
             try
             {
-                account.CreatedDate = _now;
-                _dataContext.Accounts.Add(account);
-                await _dataContext.SaveChangesAsync();
-
-                await tran.CommitAsync();
-                return new ApiResult(account);
+                var users = await _userManager.Users.ToListAsync();
+                return new ApiResult(users);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                await tran.RollbackAsync();
-                throw new Exception($"Lỗi khi tạo tài khoản: {e.Message}");
+                return new ApiResult { Message = ex.Message };
             }
         }
 
-        public async Task<ApiResult> UpdateAccount(int accountId, Account account, List<string> roles)
+        public async Task<ApiResult> GetById(int id)
         {
-            using var tran = await _dataContext.Database.BeginTransactionAsync();
             try
             {
-                var existingAccount = await _dataContext.Accounts.FirstOrDefaultAsync(a => a.Id == accountId);
-                if (existingAccount == null)
+                var user = await _userManager.FindByIdAsync(id.ToString());
+                if (user == null)
                 {
-                    throw new Exception("Không tìm thấy tài khoản");
+                    return new ApiResult { Message = $"Không tìm thấy người dùng với ID {id}." };
                 }
 
-                existingAccount.Username = account.Username ?? existingAccount.Username;
-                existingAccount.Password = account.Password ?? existingAccount.Password;
-                existingAccount.Type = account.Type ?? existingAccount.Type;
-                existingAccount.Email = account.Email ?? existingAccount.Email;
-                existingAccount.FullName = account.FullName ?? existingAccount.FullName;
-                existingAccount.AvatarUrl = account.AvatarUrl ?? existingAccount.AvatarUrl;
-                existingAccount.CreatedDate = account.CreatedDate ?? existingAccount.CreatedDate;
-
-                await _dataContext.SaveChangesAsync();
-
-                await tran.CommitAsync();
-                return new ApiResult(existingAccount);
+                return new ApiResult(user);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                await tran.RollbackAsync();
-                throw new Exception($"Lỗi khi cập nhật tài khoản: {e.Message}");
+                return new ApiResult { Message = ex.Message };
             }
         }
 
-        public async Task<ApiResult> DeleteAccount(int accountId, List<string> roles)
-        {
-            using var tran = await _dataContext.Database.BeginTransactionAsync();
-            try
-            {
-                var account = await _dataContext.Accounts.FirstOrDefaultAsync(a => a.Id == accountId);
-                if (account == null)
-                {
-                    throw new Exception("Không tìm thấy tài khoản");
-                }
-
-                _dataContext.Accounts.Remove(account);
-                await _dataContext.SaveChangesAsync();
-
-                await tran.CommitAsync();
-                return new ApiResult();
-            }
-            catch (Exception e)
-            {
-                await tran.RollbackAsync();
-                throw new Exception($"Lỗi khi xóa tài khoản: {e.Message}");
-            }
-        }
-
-
-        public async Task<ApiResult> CheckAccess(int accountId, List<string> roles)
+        public async Task<ApiResult> AddUser(RegisterModel model)
         {
             try
             {
-                var account = await _dataContext.Accounts.FirstOrDefaultAsync(a => a.Id == accountId);
-                if (account == null)
+                var user = new User
                 {
-                    return new ApiResult { Message = "Không tìm thấy tài khoản" };
-                }
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    FullName = model.FullName,
+                };
 
-                var userRoles = await _userManager.GetRolesAsync(account);
-                bool isAdmin = userRoles.Contains(RoleConstants.ADMIN);
-
-                if (isAdmin)
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
                 {
-                    return new ApiResult(true);
+                    return new ApiResult(user);
                 }
                 else
                 {
-                    return new ApiResult { Message = "Không có quyền truy cập" };
+                    return new ApiResult { Message = string.Join(", ", result.Errors.Select(e => e.Description)) };
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw new Exception($"Lỗi: {e.Message}");
+                return new ApiResult { Message = ex.Message };
+            }
+        }
+
+        public async Task<ApiResult> UpdateUser(User model)
+        {
+            try
+            {
+                var result = await _userManager.UpdateAsync(model);
+                if (result.Succeeded)
+                {
+                    return new ApiResult();
+                }
+                else
+                {
+                    return new ApiResult { Message = string.Join(", ", result.Errors.Select(e => e.Description)) };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ApiResult { Message = ex.Message };
+            }
+        }
+
+        public async Task<ApiResult> DeleteUser(int id)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id.ToString());
+                if (user == null)
+                {
+                    return new ApiResult { Message = $"Không tìm thấy người dùng với ID: {id}." };
+                }
+
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    return new ApiResult();
+                }
+                else
+                {
+                    return new ApiResult { Message = string.Join(", ", result.Errors.Select(e => e.Description)) };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ApiResult { Message = ex.Message };
+            }
+        }
+        public async Task<ApiResult> Add(User model)
+        {
+            try
+            {
+                var result = await _userManager.CreateAsync(model);
+                if (result.Succeeded)
+                {
+                    return new ApiResult(model);
+                }
+                else
+                {
+                    return new ApiResult { Message = string.Join(", ", result.Errors.Select(e => e.Description)) };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ApiResult { Message = ex.Message };
+            }
+        }
+
+        public async Task<ApiResult> Update(User model)
+        {
+            try
+            {
+                var result = await _userManager.UpdateAsync(model);
+                if (result.Succeeded)
+                {
+                    return new ApiResult();
+                }
+                else
+                {
+                    return new ApiResult { Message = string.Join(", ", result.Errors.Select(e => e.Description)) };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ApiResult { Message = ex.Message };
+            }
+        }
+
+        public async Task<ApiResult> Delete(int id)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id.ToString());
+                if (user == null)
+                {
+                    return new ApiResult { Message = $"Không tìm thấy người dùng với ID: {id}." };
+                }
+
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    return new ApiResult();
+                }
+                else
+                {
+                    return new ApiResult { Message = string.Join(", ", result.Errors.Select(e => e.Description)) };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ApiResult { Message = ex.Message };
             }
         }
     }
