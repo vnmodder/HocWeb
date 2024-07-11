@@ -1,55 +1,32 @@
 <template>
-  <section>
-    <div class="container px-4 px-lg-5 mt-5">
-      <h2 class="fw-bolder mb-4">{{ categoryName ?? "Tất cả sản phẩm" }}</h2>
-      <div
-        class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center"
-      >
-        <div v-for="(item, index) in products" :key="index" class="col mb-5">
-          <div class="card h-100">
-            <div
-              v-if="index % 2 == 1"
-              class="badge bg-dark text-white position-absolute"
-              style="top: 0.5rem; right: 0.5rem"
-            >
-              Sale
+  <section class="py-5">
+    <div class="container px-4 px-lg-5">
+      <h2 class="fw-bolder mb-4 text-center">{{ categoryName ?? "Tất cả sản phẩm" }}</h2>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <div v-for="(item, index) in products" :key="index" class="col mb-4">
+          <div class="card h-100 shadow-sm">
+            <div class="position-relative">
+              <a :href="'/product-detail?id=' + item.id">
+                <img class="card-img-top" :src="item.image" alt="Product Image" />
+              </a>
             </div>
-            <a :href="'/product-detail?id=' + item.id">
-              <img class="card-img-top" :src="item.image" alt="..." />
-            </a>
-            <div class="card-body p-4">
-              <div class="text-center">
-                <h5 class="fw-bolder">{{ item.name }}</h5>
-                                         <div class="bi-star-fill"></div>
-                                         <div class="bi-star-fill"></div>
-                                         <div class="bi-star-fill"></div>
-                                     </div> 
-                <span
-                  >{{ new Intl.NumberFormat("vi-vn").format(item.unitPrice) }}đ
-                </span>
+            <div class="card-body text-center">
+              <h5 class="card-title fw-bolder">{{ item.name }}</h5>
+              <div class="d-flex justify-content-center mb-2">
+                <div class="bi-star-fill text-warning"></div>
+                <div class="bi-star-fill text-warning"></div>
+                <div class="bi-star-fill text-warning"></div>
               </div>
-            </div>
-            <div
-              class="card-footer p-4 pt-0 border-top-0 bg-transparent d-flex justify-content-center"
-            >
-              <div class="text-center">
-                <div class="text-center">
-                  <a
-                    class="btn btn-outline-dark mt-auto"
-                    :href="'/product-detail?id=' + item.id"
-                    >Xem</a
-                  >
-                </div>
-              </div>
-              <div class="text-center">
-                <button class="btn btn-outline-dark mt-auto ms-2" @click="addToCart(item)">
-                  Thêm vào giỏ
-                </button>
+              <div class="mb-3">{{ new Intl.NumberFormat("vi-vn").format(item.unitPrice) }}đ</div>
+              <div class="d-grid gap-2">
+                <a :href="'/product-detail?id=' + item.id" class="btn btn-outline-dark">Xem chi tiết</a>
+                <button class="btn btn-outline-dark" @click="addToCart(item)">Thêm vào giỏ hàng</button>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
   </section>
 </template>
 
