@@ -1,5 +1,7 @@
 ﻿using HocWeb.Infrastructure;
 using HocWeb.Service;
+using HocWeb.Service.Interfaces;
+using HocWeb.Service.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 
@@ -72,7 +74,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 
 app.UseHttpsRedirection();
 app.UseRouting();
