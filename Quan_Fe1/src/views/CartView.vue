@@ -1,5 +1,5 @@
 <template>
-  <section class="shopping-cart-section pt-1">
+  <section class="shopping-cart-section pt-1" v-if="items">
     <div class="container px-2 px-lg-5 mt-1">
       <h2 class="fw-bolder mb-4 text-center">Giỏ hàng của bạn</h2>
       <div class="row gx-4 gx-lg-5 align-items-center">

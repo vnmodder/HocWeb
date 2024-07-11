@@ -10,7 +10,7 @@ namespace HocWeb.Service.Services
 {
     internal class CustomerService : BaseService, ICustomerService
     {
-        public CustomerService(DataContext dataContext, IUserService userService) : base(dataContext, userService) { }
+        public CustomerService(DataContext dataContext, Common.IServices.IUserService userService) : base(dataContext, userService) { }
 
         public async Task<ApiResult> Add(Customer model)
         {

@@ -11,7 +11,7 @@ namespace HocWeb.Service.Services
     public class SupplierService : BaseService, ISupplierService
     {
 
-        public SupplierService(DataContext dataContext, IUserService userService) : base(dataContext, userService) { }
+        public SupplierService(DataContext dataContext, Common.IServices.IUserService userService) : base(dataContext, userService) { }
  
 
         public async Task<ApiResult> Add(Supplier model)

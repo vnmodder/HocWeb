@@ -17,7 +17,7 @@ namespace HocWeb.Service.Services
         private readonly IFtpDirectoryService _ftpDirectoryService;
 
         public CategoryService(DataContext dataContext, IFtpDirectoryService ftpDirectoryService,
-            IUserService userService) : base(dataContext, userService)
+            Common.IServices.IUserService userService) : base(dataContext, userService)
         {
             _ftpDirectoryService = ftpDirectoryService;
         }

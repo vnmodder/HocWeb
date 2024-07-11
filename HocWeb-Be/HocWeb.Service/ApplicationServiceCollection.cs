@@ -24,7 +24,7 @@ namespace HocWeb.Service
             // User Management Service.
             services.AddScoped<UserManager<User>>();
             services.AddScoped<SignInManager<User>, SignInManager<User>>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<Common.IServices.IUserService, UserService>();
 
             // Ftp
             services.AddScoped<IFtpDirectoryService, FtpDirectoryService>();
@@ -39,6 +39,7 @@ namespace HocWeb.Service
             services.AddScoped<ISupplierService, SupplierService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IUserManagementService, UserManagementService>();
+            services.AddScoped<IAccountService, AccountService>();
             #endregion
             return services;
         }

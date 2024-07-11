@@ -17,7 +17,6 @@ namespace HocWeb.Infrastructure
         public virtual DbSet<Supplier> Suppliers { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
-
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
 
     }

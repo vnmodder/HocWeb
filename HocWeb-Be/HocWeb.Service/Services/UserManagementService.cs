@@ -21,7 +21,7 @@ namespace HocWeb.Service.Services
         public UserManagementService(DataContext dataContext,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            IUserService userService) : base(dataContext, userService)
+            Common.IServices.IUserService userService) : base(dataContext, userService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
