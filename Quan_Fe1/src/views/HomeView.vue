@@ -1,45 +1,36 @@
 <template>
-  <header class="py-5">
+  <header class="py-5 bg-light">
     <div class="container px-4 px-lg-5 my-5">
       <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
         <img src="../assets/a.png" class="img-fluid display-4 fw-bolder" alt="Logo">
       </div>
     </div>
   </header>
-  
-  <h2 class="fw-bolder mb-4 text-center">Các tài khoản hot</h2>
-  <div class="container">
-    <div class="row mt-4">
-      <div class="col-md-6" v-for="(item, index) in products" :key="index">
-        <div class="card mb-3">
-          <div class="row g-0">
-            <div class="col-md-4 justify-content-center">
-              <a :href="'/product-detail?id=' + item.id">
-                <img class="card-img-top" :src="item.image" alt="..." />
-              </a>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="fw-bolder">{{ item.name }}</h5>
-                <span>{{ new Intl.NumberFormat("vi-vn").format(item.unitPrice) }}đ</span>
-                <form class="d-flex">
-                  <div class="row">
-                    <div class="col">
-                      <a class="btn btn-outline-secondary mb-3 mb-md-0" :href="'/product-detail?id=' + item.id">Xem</a>
-                    </div>
-                    <div class="col-auto">
-                      <a class="btn btn-outline-secondary" href="#" @click="addToCart(item)">Thêm vào giỏ hàng</a>
-                    </div>
-                  </div>
-                </form>
+
+  <section class="featured-accounts py-5">
+    <div class="container">
+      <h2 class="fw-bolder mb-4 text-center">Các tài khoản hot</h2>
+      <div class="row g-4">
+        <div class="col-md-4" v-for="(item, index) in products" :key="index">
+          <div class="card h-100 shadow-sm">
+            <a :href="'/product-detail?id=' + item.id">
+              <img class="card-img-top" :src="item.image" alt="Product image" />
+            </a>
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bolder">{{ item.name }}</h5>
+              <p class="card-text text-muted">{{ new Intl.NumberFormat("vi-vn").format(item.unitPrice) }}đ</p>
+              <div class="mt-auto d-flex justify-content-between">
+                <a class="btn btn-outline-secondary" :href="'/product-detail?id=' + item.id">Xem</a>
+                <button class="btn btn-outline-secondary" @click="addToCart(item)">Thêm vào giỏ hàng</button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
+
 
 
 <script setup lang="ts">
