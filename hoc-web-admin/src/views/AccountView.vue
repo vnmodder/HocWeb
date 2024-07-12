@@ -45,7 +45,6 @@
           <th scope="col">Email</th>
           <th scope="col">Họ và tên</th>
           <th scope="col">Quyền</th>
-          <th scope="col">Sửa quyền</th>
           <th scope="col">Xóa</th>
         </tr>
       </thead>
@@ -56,8 +55,9 @@
           <td>{{ account.email }}</td>
           <td>{{ account.fullName }}</td>
           <td>{{ account.roles.join(', ') }}</td>
-          <td><a @click.stop="onAssignRoles(account)" class="text-danger">Sửa</a></td>
-          <td class="text-danger"><a>Xóa</a></td>
+          <td class="text-danger">
+            <a @click.prevent="confirmDelete(account.id)">Xóa</a>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -98,11 +98,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted  } from "vue";
+import { ref, computed, onMounted } from "vue";
 import GroupItem from "@/components/GroupItem.vue";
 import ButtonComponent from "@/components/ButtonComponent.vue";
 import DialogComponent from "@/components/DialogComponent.vue";
-import AssignRolesDialog from "@/views/pages/AssignRolesDialog.vue";
 import AccountDetailPage from "@/views/pages/AccountDetailPage.vue";
 import accountApi from "@/api/account.api";
 
@@ -154,6 +153,23 @@ const loadAccounts = async () => {
     alert('Lỗi');
   }
 };
+
+const confirmDelete = async (accountId: number) => {
+  try {
+    const confirmDelete = confirm("Bạn có chắc chắn muốn xóa tài khoản này?");
+    if (!confirmDelete) return;
+
+    const response = await accountApi.deleteAccount(accountId);
+    if (response && response.data.isSuccess) {
+      alert("Tài khoản đã được xóa thành công");
+      await loadAccounts();
+    } else {
+      alert(response.data.message);
+    }
+  } catch (error) {
+    alert('Lỗi');
+  }
+};
+
 onMounted(loadAccounts);
 </script>
-
