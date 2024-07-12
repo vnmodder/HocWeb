@@ -48,9 +48,9 @@ const handleLogin = async () => {
     if(response && response.result?.isSuccess){
       user.login({
         userId: response.result.data.userId,
-        userName: response.result.data.userName,
+        username: response.result.data.userName,
         email: response.result.data.email,
-        fullname: response.result.data.fullname,
+        fullName: response.result.data.fullname,
       })
       Cookies.set("token", response.result.data.token);
       router.push("/");
