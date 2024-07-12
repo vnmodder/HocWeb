@@ -8,6 +8,7 @@ export interface LoginModel{
     userId:Number,
     email: string,
     fullName?: string,
+    roles: string[]
   }
   
  export  interface LoginResponseModel{

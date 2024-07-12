@@ -16,4 +16,10 @@ export default {
   assignRoles: async (userId: number, roleNames: string[]) => {
     return await baseApi.post('Account/assign-roles', { userId, roleNames });
   },
+  getRoles: async(id: string | number) => {
+    return await baseApi.get(`Account/getroles/${id}`);
+  },
+  addUser: async (model: any) => {
+    return await baseApi.post('Account/register', model);
+  }
 };

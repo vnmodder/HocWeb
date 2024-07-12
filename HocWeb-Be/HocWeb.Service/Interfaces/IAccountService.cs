@@ -13,5 +13,6 @@ namespace HocWeb.Service.Interfaces
         Task<ApiResult> DeleteUser(int userId);
         Task<ApiResult> UpdateUser(User user);
         Task<ApiResult> AssignRoles(int userId, List<string> roleNames);
+        Task<ApiResult> GetRoles(int userId);
     }
 }
