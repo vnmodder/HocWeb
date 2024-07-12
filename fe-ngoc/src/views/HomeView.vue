@@ -1,21 +1,22 @@
 <template>
-<div class="container mt-4">
-        <div class="row">
-            <div v-for="item in products" :key="item.id" class="col-3">
-                <div class="card">
-                    <img :src="item.image" class="card-img-top" :alt="`Product ${item.name}`">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ item.name }}</h5>
-                        <p class="card-text">{{ item.description }}</p>
-                        <div class="d-flex justify-content-between">
-                            <a class="btn btn-primary">View</a>
-                            <a href="#" class="btn btn-secondary">Add to Cart</a>
-                        </div>
-                    </div>
+<div class="container mt-6 mb-6">
+    <div class="row">
+        <div class="col-lg-4 col-md-6 mb-4" v-for="item in products" :key="item.id">
+            <div class="card h-100">
+                <img :src="item.image" class="card-img-top" :alt="`Product ${item.name}`">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <p class="card-text">{{ item.description }}</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <a :href="'/Product_detail?Id=' + item.id"class="btn btn-primary">View</a>
+                    <a href="#" class="btn btn-secondary">Add to Cart</a>
                 </div>
             </div>
         </div>
     </div>
+    <br><br>
+</div>
 
 </template>
 
