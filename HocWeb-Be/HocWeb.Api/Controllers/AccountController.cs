@@ -76,10 +76,21 @@ namespace HocWeb.Api.Controllers
             return Ok(result);
         }
 
+
         [HttpPost("assignroles/{userId}")]
         public async Task<IActionResult> AssignRoles(int userId, List<string> roleNames)
         {
             var result = await _accountService.AssignRoles(userId, roleNames);
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+        [HttpGet("getroles/{userId}")]
+        public async Task<IActionResult> GetRoles(int userId)
+        {
+            var result = await _accountService.GetRoles(userId);
             if (result.IsSuccess)
             {
                 return Ok(result);

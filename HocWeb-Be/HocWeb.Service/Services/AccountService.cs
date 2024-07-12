@@ -79,13 +79,29 @@ namespace HocWeb.Service.Services
             try
             {
                 var users = await _userManager.Users.ToListAsync();
-                return new ApiResult(users);
+                var userRoles = new List<object>();
+
+                foreach (var user in users)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    userRoles.Add(new
+                    {
+                        user.Id,
+                        user.UserName,
+                        user.Email,
+                        user.FullName,
+                        Roles = roles
+                    });
+                }
+
+                return new ApiResult(userRoles);
             }
             catch (Exception ex)
             {
                 return new ApiResult { Message = ex.Message };
             }
         }
+
 
         public async Task<ApiResult> GetById(int id)
         {
@@ -236,6 +252,24 @@ namespace HocWeb.Service.Services
                 {
                     return new ApiResult { Message = string.Join(", ", result.Errors.Select(e => e.Description)) };
                 }
+            }
+            catch (Exception ex)
+            {
+                return new ApiResult { Message = ex.Message };
+            }
+        }
+        public async Task<ApiResult> GetRoles(int userId)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId.ToString());
+                if (user == null)
+                {
+                    return new ApiResult { Message = $"Không tìm thấy người dùng với ID {userId}." };
+                }
+
+                var roles = await _userManager.GetRolesAsync(user);
+                return new ApiResult(roles);
             }
             catch (Exception ex)
             {
