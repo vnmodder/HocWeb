@@ -78,4 +78,5 @@ const fetchData = async () => {
   console.log(products.value);
 };
 fetchData();
+useCartStore().loadCart();
 </script>

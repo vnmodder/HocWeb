@@ -57,4 +57,5 @@ const fetchData = async () => {
     }
 };
 fetchData();
+useCartStore().loadCart();
 </script>
