@@ -44,7 +44,7 @@ const handleLogin = async () => {
     }
     
     const response = await auth.login(LoginModel);
-    console.log(response);
+    // console.log(response);
     if(response && response.result?.isSuccess){
       user.login({
         userId: response.result.data.userId,
