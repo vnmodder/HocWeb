@@ -46,7 +46,7 @@ import { useCartStore } from '@/stores/cart';
 
 
 const useCart = useCartStore();
-useCart.loadCart();
+// useCart.loadCart();
 const {items} = storeToRefs(useCart);
 
 const delclick = (item : any) => {
