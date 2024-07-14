@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 import PageNavBar from '@/components/PageNavBar.vue'
 import PageFooter from '@/components/PageFooter.vue'
 
-
+// test 
 </script>
 
 <template>
@@ -15,4 +15,5 @@ import PageFooter from '@/components/PageFooter.vue'
     <PageFooter/>
   </footer>
 </template>
+
 
