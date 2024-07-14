@@ -10,7 +10,7 @@
                 </div>
                 <div class="card-footer d-flex justify-content-between">
                     <a href="#" class="btn btn-primary">View</a>
-                    <a href="#" class="btn btn-secondary">Add to Cart</a>
+                    <button class="btn btn-secondary" @click="AddToCart(item)">Add to Cart</button>
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@ import { ref } from 'vue';
 import productApi from '@/api/product.api';
 import { userStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
-
+import { useCartStore } from '@/stores/cart';
 
 const route = useRoute();
 const products = ref<any>([]);
@@ -34,6 +34,20 @@ const categoryName = ref<any>();
 
 const authStore = userStore();
 const {user} = storeToRefs(authStore);
+
+const AddToCart = (item : any) =>{
+    if(!user.value){
+        alert("pls login to have right to manipulate!");
+        return
+    }
+    const product = {
+        id: item.id,
+        name: item.name,
+        unitPrice: item.unitPrice,
+        quantity: 1,
+    }
+    useCartStore().addToCart(product);
+}
 
 const fetchData = async () => {
   if(route.query.categoryId){

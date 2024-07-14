@@ -3,6 +3,8 @@ import HomeView from '../views/HomeView.vue'
 import login from '@/views/LoginView.vue'
 import Product_detail from '@/views/ProductDetailView.vue'
 import product_by_category from '@/views/Product_By_CategoryView.vue'
+import Cart from '@/views/CartView.vue'
+
 
 
 const router = createRouter({
@@ -27,6 +29,11 @@ const router = createRouter({
       path: '/Product_detail/:Id?', 
       name: 'Product_detail/:Id',
       component: Product_detail
+    },
+    {
+      path: '/Cart', 
+      name: 'Cart',
+      component: Cart
     },
   ]
 })

@@ -9,8 +9,8 @@
             <p>Description: {{ product?.description }}</p>
             <p>Quantity: <strong>{{ product.quantity }}</strong></p>
             <p>Price: <strong>{{ product.unitPrice }}</strong></p>
-            <button class="btn btn-primary">Add to Cart</button>
-        </div>
+            <button class="btn btn-secondary" @click="AddToCart(product)">Add to Cart</button>
+          </div>
     </div>
 </div>
 </template>
@@ -19,7 +19,28 @@
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 import productDApi from "@/api/product-detail.api";
+import { userStore } from '@/stores/auth';
+import { storeToRefs } from 'pinia';
+import { useCartStore } from '@/stores/cart';
 
+const authStore = userStore();
+const {user} = storeToRefs(authStore);
+
+const products = ref<any>([]);
+
+const AddToCart = (item : any) =>{
+    if(!user.value){
+        alert("pls login to have right to manipulate!");
+        return
+    }
+    const product = {
+        id: item.id,
+        name: item.name,
+        unitPrice: item.unitPrice,
+        quantity: 1,
+    }
+    useCartStore().addToCart(product);
+}
 
 const route = useRoute();
 const product = ref<any>();
@@ -30,10 +51,9 @@ const fetchData = async () => {
     if(response && response.data.result.isSuccess){
       product.value = response.data.result.data;
     }
-    console.log(response)
   }
   else{
-    // alert(Response.da)
+    
   }
 };
 
