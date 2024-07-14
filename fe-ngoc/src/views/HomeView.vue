@@ -45,7 +45,7 @@ const AddToCart = (item : any) =>{
     }
     useCartStore().addToCart(product);
 }
-console.log(useCartStore().loadCart())
+// console.log(useCartStore().getAllProducts())
 const fetchData = async () => {
     const response = await homeApi.getAllProduct();
     // console.log(response);
@@ -57,4 +57,5 @@ const fetchData = async () => {
     }
 };
 fetchData();
+useCartStore().loadCart();
 </script>
