@@ -59,5 +59,5 @@ const fetchData = async () => {
 
 
 fetchData();
-useCartStore().loadCart();
+// useCartStore().loadCart();
 </script>
