@@ -15,4 +15,5 @@ export default {
     addOrderDetail: async (model: any) => {
         return await baseApi.post('OrderDetail/add', model);
     }
+    
 }

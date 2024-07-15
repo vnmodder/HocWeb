@@ -57,7 +57,6 @@
           <th class="text-center" scope="col">ID Khach Hang</th>
           <th scope="col">Ngày tạo</th>
           <th scope="col">Tổng tien</th>
-          <th scope="col">Tình trạng</th>
           <th scope="col"></th>
           <th scope="col"></th>
         </tr>
@@ -68,17 +67,15 @@
           <td>{{ item.id }}</td>
           <td class="text-center">{{ item.customerId }}</td>
           <td>{{ item.createdDate }}</td>
-          <td>{{ item.amount }}</td>
-          <td v-if="item.deleteDate">Đã hoàn thành</td>
-          <td v-if="!item.deleteDate">Chưa hoàn thành</td>
+          <td>{{ new Intl.NumberFormat("vi-vn").format(item.amount) }}</td>
           <td>
             <button @click="onDetail" class="icon-button">
               <i class="fa fa-bars"></i>
             </button>
           </td>
           <td>
-            <button @click="" class="icon-button">
-              <i class="fa fa-trash"></i>
+            <button @click="deleteOrder(item.id)" class="icon-button">
+              <i class="fa fa-trash text-danger"></i>
             </button>
           </td>
         </tr>
@@ -171,6 +168,19 @@ const onUpdate = () => {
 const onDialogClose = async () => {
   await loadOrder();
 };
+
+const deleteOrder = async (id: number) => {
+  const result = window.confirm("Xác nhận xóa đơn hàng");
+  if (result) {
+    const response = await orderApi.deleteOrder(id);
+    if (response && response.data.result.isSuccess) {
+      await loadOrder();
+    } else {
+      alert(response.data.result.message);
+    }
+  }
+};
+
 
 loadOrder();
 </script>
