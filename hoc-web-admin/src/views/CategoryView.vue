@@ -28,13 +28,13 @@
           />
         </div>
       </div>
+      <ButtonComponent text="Thêm" :onClick="onAdd" class-name="col-sm-1" />
       <ButtonComponent
-        text="Thêm"
-        :onClick="onAdd"
-        class-name="col-sm-1"
+        :disabled="updateStatus"
+        text="Sửa"
+        :on-click="onUpdate"
+        class-name="ms-2 col-sm-1"
       />
-      <ButtonComponent :disabled="updateStatus" text="Sửa" 
-      :on-click="onUpdate" class-name="ms-2 col-sm-1" />
     </div>
   </GroupItem>
   <GroupItem title="Danh sách danh mục hiện có">
@@ -66,27 +66,27 @@
     :modelValue="isAddOpen"
     title="Thêm danh mục"
     @update:modelValue="isAddOpen = $event"
-    @onDialogClose = "onDialogClose"
+    @onDialogClose="onDialogClose"
   >
-  <template v-slot="{ onClose}">
-    <CategoryDetailPage  :on-close="onClose" :mode="'create'" />
-  </template>
+    <template v-slot="{ onClose }">
+      <CategoryDetailPage :on-close="onClose" :mode="'create'" />
+    </template>
   </DialogComponent>
 
   <DialogComponent
     :modelValue="isUpdateOpen"
     title="Cập nhật danh mục"
     @update:modelValue="isUpdateOpen = $event"
-    @onDialogClose = "onDialogClose"
+    @onDialogClose="onDialogClose"
   >
-  <template v-slot="{ onClose}">
-    <CategoryDetailPage  :on-close="onClose" v-model="selected"/>
-  </template>
+    <template v-slot="{ onClose }">
+      <CategoryDetailPage :on-close="onClose" v-model="selected" />
+    </template>
   </DialogComponent>
 </template>
 
 <script setup lang="ts">
-import { ref , computed} from "vue";
+import { ref, computed } from "vue";
 import GroupItem from "@/components/GroupItem.vue";
 import ButtonComponent from "@/components/ButtonComponent.vue";
 import DialogComponent from "@/components/DialogComponent.vue";
@@ -113,7 +113,7 @@ const onUpdate = () => {
   isUpdateOpen.value = true;
 };
 
-const updateStatus = computed(()=>!selected.value.id)
+const updateStatus = computed(() => !selected.value.id);
 
 const rowClick = (item: any) => {
   selected.value.id = item.id;
@@ -123,7 +123,7 @@ const rowClick = (item: any) => {
 const loadCategories = async () => {
   const response = await cateApi.getAllCategory();
   if (response && response.data.result.isSuccess) {
-    categories.value = response.data.result.data
+    categories.value = response.data.result.data;
   } else {
     categories.value = [];
     alert(response.data.result.message);
