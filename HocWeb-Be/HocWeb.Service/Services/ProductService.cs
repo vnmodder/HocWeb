@@ -4,6 +4,7 @@ using HocWeb.Infrastructure.Extensions;
 using HocWeb.Service.Common.IServices;
 using HocWeb.Service.Interfaces;
 using HocWeb.Service.Models;
+using HocWeb.Service.Models.Product;
 using Microsoft.EntityFrameworkCore;
 
 namespace HocWeb.Service.Services
@@ -35,6 +36,64 @@ namespace HocWeb.Service.Services
             }
 
             return new ApiResult() { Message = "Sản phẩm này đã tồn tại!." };
+        }
+
+        public async Task<ApiResult> Add(AddProductModel model)
+        {
+            var proDuct = await _dataContext.Products.FirstOrDefaultAsync(x => x.Name == model.Name);
+            if (proDuct == null)
+            {
+                using var tran = _dataContext.Database.BeginTransaction();
+                try
+                {
+
+                    var newProduct = new Product()
+                    {
+                        Name = model.Name,
+                        CategoryId = model.categoryId,
+                        UnitBrief = model.unitBrief,
+                        UnitPrice = model.unitPrice,
+                        Image = model.Image,
+                        Description = model.Description,
+                        Quantity = model.quantity,
+                        Discount = model.discount,
+                        CreatedDate = _now,
+                        ProductDate = _now,
+                        UpdatedDate = _now,
+                        DeleteDate = _now,
+                        SupplierId = model.supplierId,
+                        Available = true,
+                        Special = true,
+                        Latest = true,
+                        Views = 1,
+                    };
+                    _dataContext.Products.Add(newProduct);
+                    await _dataContext.SaveChangesAsync();
+
+                    //if (model.File != null)
+                    //{
+                    //    var fileUpload = await UploadFile(newCate.Id, model.File);
+                    //    if (!string.IsNullOrEmpty(fileUpload))
+                    //    {
+                    //        newCate.Image = fileUpload;
+                    //    }
+                    //}
+
+                    await _dataContext.SaveChangesAsync();
+                    await tran.CommitAsync();
+                    return new(newProduct);
+                }
+                catch (Exception e)
+                {
+                    await tran.RollbackAsync();
+                    throw new Exception(e.Message + "lỗi");
+                }
+            }
+
+            return new()
+            {
+                Message = "Sản phẩm này đã tồn tại",
+            };
         }
 
         public async Task<ApiResult> Delete(int id)
@@ -114,5 +173,7 @@ namespace HocWeb.Service.Services
 
             return new ApiResult() { Message = "Không tìm thấy sản phẩm này." };
         }
+
+        //public async Task<ApiResult> 
     }
 }
