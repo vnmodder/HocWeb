@@ -2,6 +2,7 @@
 using HocWeb.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using HocWeb.Service.Models.Product;
 
 namespace HocWeb.Api.Controllers
 {
@@ -39,7 +40,7 @@ namespace HocWeb.Api.Controllers
 
         [Authorize]
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromBody] Product model)
+        public async Task<IActionResult> Add([FromForm] AddProductModel model)
         {
             try
             {
