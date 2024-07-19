@@ -38,7 +38,7 @@ namespace HocWeb.Service.Services
             return new ApiResult() { Message = "Sản phẩm này đã tồn tại!." };
         }
 
-        public async Task<ApiResult> Add(AddProductModel model)
+        public async Task<ApiResult> Add2(AddProductModel model)
         {
             var proDuct = await _dataContext.Products.FirstOrDefaultAsync(x => x.Name == model.Name);
             if (proDuct == null)
@@ -59,8 +59,8 @@ namespace HocWeb.Service.Services
                         Discount = model.discount,
                         CreatedDate = _now,
                         ProductDate = _now,
-                        UpdatedDate = _now,
-                        DeleteDate = _now,
+                        UpdatedDate = null,
+                        DeleteDate = null,
                         SupplierId = model.supplierId,
                         Available = true,
                         Special = true,
@@ -68,17 +68,6 @@ namespace HocWeb.Service.Services
                         Views = 1,
                     };
                     _dataContext.Products.Add(newProduct);
-                    await _dataContext.SaveChangesAsync();
-
-                    //if (model.File != null)
-                    //{
-                    //    var fileUpload = await UploadFile(newCate.Id, model.File);
-                    //    if (!string.IsNullOrEmpty(fileUpload))
-                    //    {
-                    //        newCate.Image = fileUpload;
-                    //    }
-                    //}
-
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
                     return new(newProduct);
@@ -105,7 +94,7 @@ namespace HocWeb.Service.Services
                 try
                 {
                     product.DeleteDate = _now;
-                    //_dataContext.Products.Remove(product);
+                    _dataContext.Products.Remove(product);
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
                     return new();
@@ -120,11 +109,59 @@ namespace HocWeb.Service.Services
             return new ApiResult() { Message = "Không tìm thấy sản phẩm này." };
         }
 
+        public async Task<ApiResult> Delete_Unpermanently(int id)
+        {
+            var product = await _dataContext.Products.FirstOrDefaultAsync(x => x.Id == id);
+            if(product != null)
+            {
+                using var tran = await _dataContext.Database.BeginTransactionAsync();
+                try 
+                {
+                    product.DeleteDate = _now;
+                    await _dataContext.SaveChangesAsync();
+                    await tran.CommitAsync();
+                    return new();
+                }
+                catch(Exception e)
+                {
+                    await tran.RollbackAsync();
+                    throw new Exception(e.Message);
+                }
+            }
+            return new ApiResult() { Message = "Không tìm thấy sản phẩm này" };
+        }
+        public async Task<ApiResult> Cancel_Delete_Unpermanently(int id)
+        {
+            var product = await _dataContext.Products.FirstOrDefaultAsync(x => x.Id == id);
+            if (product != null)
+            {
+                using var tran = await _dataContext.Database.BeginTransactionAsync();
+                try
+                {
+                    product.DeleteDate = null;
+                    await _dataContext.SaveChangesAsync();
+                    await tran.CommitAsync();
+                    return new();
+                }
+                catch (Exception e)
+                {
+                    await tran.RollbackAsync();
+                    throw new Exception(e.Message);
+                }
+            }
+            return new ApiResult() { Message = "Không tìm thấy sản phẩm này" };
+        }
+
         public async Task<ApiResult> GetAll()
         {
             var result = await _dataContext.Products.Exist().ToListAsync();
             return new(result);
 
+        }
+        public async Task<ApiResult> GetAll_Insist_Deleted()
+        {
+            var result = await _dataContext.Products.ToListAsync();
+            return new(result);
         }
 
         public async Task<ApiResult> GetById(int id)
@@ -174,6 +211,5 @@ namespace HocWeb.Service.Services
             return new ApiResult() { Message = "Không tìm thấy sản phẩm này." };
         }
 
-        //public async Task<ApiResult> 
     }
 }

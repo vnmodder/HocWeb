@@ -24,6 +24,14 @@ namespace HocWeb.Api.Controllers
             return Response(result);
         }
 
+        [HttpGet("getAll_insist_deleted")]
+        public async Task<IActionResult> GetAll_Insist_Deleted()
+        {
+            var result = await _productService.GetAll_Insist_Deleted();
+            return Response(result);
+        }
+            
+
         [HttpGet("get-by-id")]
         public async Task<IActionResult> GetById([FromQuery] int id)
         {
@@ -37,14 +45,28 @@ namespace HocWeb.Api.Controllers
                 throw new Exception(e.Message);
             }
         }
-
         [Authorize]
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromForm] AddProductModel model)
+        public async Task<IActionResult> Add([FromBody] Product model)
         {
             try
             {
                 var result = await _productService.Add(model);
+                return Response(result);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("add2")]
+        public async Task<IActionResult> Add([FromForm] AddProductModel model)
+        {
+            try
+            {
+                var result = await _productService.Add2(model);
                 return Response(result);
             }
             catch (Exception e)
@@ -75,6 +97,36 @@ namespace HocWeb.Api.Controllers
             try
             {
                 var result = await _productService.Delete(id);
+                return Response(result);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpDelete("delete_unpermanently")]
+        public async Task<IActionResult> Delete_Unpermanently([FromQuery] int id)
+        {
+            try
+            {
+                var result = await _productService.Delete_Unpermanently(id);
+                return Response(result);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpDelete("cancel_delete_unpermanently")]
+        public async Task<IActionResult> Cancel_Delete_Unpermanently([FromQuery] int id)
+        {
+            try
+            {
+                var result = await _productService.Cancel_Delete_Unpermanently(id);
                 return Response(result);
             }
             catch (Exception e)
