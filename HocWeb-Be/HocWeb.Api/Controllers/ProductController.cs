@@ -106,8 +106,8 @@ namespace HocWeb.Api.Controllers
         }
 
         [Authorize]
-        [HttpDelete("delete_unpermanently")]
-        public async Task<IActionResult> Delete_Unpermanently([FromQuery] int id)
+        [HttpPost("delete_unpermanently")]
+        public async Task<IActionResult> Delete_Unpermanently([FromBody] int id)
         {
             try
             {
@@ -121,8 +121,8 @@ namespace HocWeb.Api.Controllers
         }
 
         [Authorize]
-        [HttpDelete("cancel_delete_unpermanently")]
-        public async Task<IActionResult> Cancel_Delete_Unpermanently([FromQuery] int id)
+        [HttpPost("cancel_delete_unpermanently")]
+        public async Task<IActionResult> Cancel_Delete_Unpermanently([FromBody] int id)
         {
             try
             {
